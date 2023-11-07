@@ -1,14 +1,15 @@
-import {Sequelize} from "sequelize";
+import { Sequelize } from "sequelize";
+import { DB_NAME, PSSWD, SERVER, USER } from "./env.js";
 
-const sequelize = new Sequelize ('db_prueba','sa','Erpp123.',{
-    host:'172.25.3.114',
-    dialect:'mssql',
+const sequelize = new Sequelize(DB_NAME, USER, PSSWD, {
+    host: SERVER,
+    dialect: 'mssql',
     dialectOptions: {
-      options: {
-        encrypt: false,
-        trustServerCertificate: true,
-      },
+        options: {
+            requestTimeout: 0,
+            encrypt: false
+        },
     },
-  })
+})
 
 export default sequelize
