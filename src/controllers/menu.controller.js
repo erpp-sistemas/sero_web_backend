@@ -1,6 +1,9 @@
-import sequelize from "../config/db.config.js";
+import { getDatabaseInstance } from "../config/dbManager.config.js";
 
 export const getMenusUserId = async (req, res) => {
+  const place_id = 0 
+  const sequelize = getDatabaseInstance(place_id)
+
     try {
       const [menuFound, metadata] = await sequelize.query(`execute sp_get_menu_sub_menu_profile_user '${req.params.user_id}'`)
 

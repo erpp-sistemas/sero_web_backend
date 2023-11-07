@@ -6,6 +6,6 @@ import {registerSchema, loginSchema} from '../schemas/auth.schema.js'
 
 const router = Router()
 
-router.get('/PlaceServiceByUserId/:user_id', getPlaceServiceByUserId)
+router.get('/PlaceServiceByUserId/:user_id/:place_id', getPlaceServiceByUserId)
 
 export default router

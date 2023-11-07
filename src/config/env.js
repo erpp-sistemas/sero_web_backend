@@ -5,4 +5,5 @@ export const {
 	USER,
 	PSSWD,
 	SERVER,
+	LOCATION_PATH
 } = getConfg().parsed

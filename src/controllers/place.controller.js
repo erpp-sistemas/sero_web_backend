@@ -1,6 +1,10 @@
-import sequelize from "../config/db.config.js";
+import { getDatabaseInstance } from "../config/dbManager.config.js";
 
 export const getPlaceByUserId = async (req, res) => {
+
+  const place_id = 0 
+  const sequelize = getDatabaseInstance(place_id) 
+  
   try {
     const [placeFound, metadata] = await sequelize.query(`execute sp_get_place_by_user_id '${req.params.user_id}'`)
 
