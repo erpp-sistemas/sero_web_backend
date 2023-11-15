@@ -130,6 +130,10 @@ export const logout = (req, res) => {
 }
 
 export const profile = async (req, res) => {
+
+  const place_id = 0 
+  const sequelize = getDatabaseInstance(place_id)
+
   const [userFound, metadata] = await sequelize.query(`execute sp_access '${req.user.username}'`)
     
   if(!userFound[0]) return res.status(400).json({
@@ -158,6 +162,9 @@ export const verifyToken = async (req, res) => {
 
   jwt.verify(token, TOKEN_SECRET, async (err, user) => {
       if(err) return res.status(401).json({message: 'Unauthorized'})
+
+      const place_id = 0 
+      const sequelize = getDatabaseInstance(place_id)
       
       const [userFound, metadata] = await sequelize.query(`execute sp_access '${user.username}'`)
 
