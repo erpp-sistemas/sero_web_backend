@@ -22,7 +22,7 @@ const dbManager = {
     },
   }),
   sero_naucalpan: new Sequelize('sero_naucalpan', 'sa', 'Erpp123.', {
-    host: '172.25.3.116',
+    host: '201.163.165.20',
     dialect: 'mssql',
     dialectOptions: {
       options: {
@@ -40,7 +40,7 @@ export const getDatabaseInstance = (place_id) => {
       return dbManager.db_prueba;
     case 2:
       return dbManager.sero_cuautitlan_izcalli;
-    case 3:
+    case 4:
       return dbManager.sero_naucalpan;
     default:
       return null; // Manejo de error si el place_id no es válido
