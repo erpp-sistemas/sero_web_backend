@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken'
 import {TOKEN_SECRET} from '../config.js'
 import { getDatabaseInstance } from "../config/dbManager.config.js";
 import { DataTypes } from 'sequelize';
-
+import Sequelize from "sequelize";
 export const register = async (req, res) => {
 
   const {name, first_last_name, second_last_name, birthdate, sex_id, user_name, password, password_hash, profile_id, active_web_access, active_app_movil_access, personal_phone, work_phone} = req.body

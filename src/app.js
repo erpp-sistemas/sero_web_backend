@@ -7,6 +7,7 @@ import serviceRoutes from './routes/service.routes.js'
 import processRoutes from './routes/process.routes.js'
 import mapRoutes from './routes/map.routes.js'
 import assignmentRoutes from './routes/assignment.routes.js'
+import accountHistoryRoutes from './routes/accounthistory.routes.js'
 import cookieParser from 'cookie-parser';
 import cors from 'cors'
 
@@ -26,12 +27,13 @@ app.use(morgan('dev'))
 app.use(express.json())
 app.use(cookieParser());
 
-app.use(`/api`, authRoutes)
-app.use(`/api`, menuRoutes)
-app.use(`/api`, placeRoutes)
-app.use(`/api`, serviceRoutes)
-app.use(`/api`, processRoutes)
-app.use(`/api`, mapRoutes)
-app.use(`/api`, assignmentRoutes)
+app.use('/api', authRoutes)
+app.use('/api', menuRoutes)
+app.use('/api', placeRoutes)
+app.use('/api', accountHistoryRoutes)
+app.use('/api', serviceRoutes)
+app.use('/api', processRoutes)
+app.use('/api', mapRoutes)
+app.use('/api', assignmentRoutes)
 
 export default app

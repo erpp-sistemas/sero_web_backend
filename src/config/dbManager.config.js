@@ -1,29 +1,49 @@
-import { Sequelize } from 'sequelize';
+import { Sequelize } from "sequelize";
 
 const dbManager = {
-  db_prueba: new Sequelize('db_prueba', 'sa', 'Erpp123.', {
-    host: '201.163.165.20',
-    dialect: 'mssql',
+  db_prueba: new Sequelize("db_prueba", "sa", "Erpp123.", {
+    host: "201.163.165.20",
+    /* host: '172.25.3.114', esta es privadfa */
+    dialect: "mssql",
     dialectOptions: {
       options: {
         encrypt: false,
         trustServerCertificate: true,
+        requestTimeout: 0,
       },
     },
   }),
-  sero_cuautitlan_izcalli: new Sequelize('sero_cuautitlan_izcalli', 'sa', 'Erpp123.', {
-    host: '201.163.165.20',
-    dialect: 'mssql',
+  sero_central: new Sequelize("sero_central", "sa", "Erpp123.", {
+    host: "201.163.165.20",
+    /* host: '172.25.3.114', esta es privadfa */
+    dialect: "mssql",
     dialectOptions: {
       options: {
         encrypt: false,
         trustServerCertificate: true,
+        requestTimeout: 0,
       },
     },
   }),
-  sero_naucalpan: new Sequelize('sero_naucalpan', 'sa', 'Erpp123.', {
-    host: '201.163.165.20',
-    dialect: 'mssql',
+  sero_cuautitlan_izcalli: new Sequelize(
+    "sero_cuautitlan_izcalli",
+    "sa",
+    "Erpp123.",
+    {
+      host: "201.163.165.20",
+      dialect: "mssql",
+      dialectOptions: {
+        options: {
+          encrypt: false,
+          trustServerCertificate: true,
+          requestTimeout: 0,
+        },
+      },
+    }
+  ),
+  sero_naucalpan: new Sequelize("sero_naucalpan", "sa", "Erpp123.", {
+    host: "172.25.3.116",
+    dialect: "mssql",
     dialectOptions: {
       options: {
         encrypt: false,
@@ -38,6 +58,8 @@ export const getDatabaseInstance = (place_id) => {
   switch (place_id) {
     case 0:
       return dbManager.db_prueba;
+    case 1:
+      return dbManager.sero_central;
     case 2:
       return dbManager.sero_cuautitlan_izcalli;
     case 4:
