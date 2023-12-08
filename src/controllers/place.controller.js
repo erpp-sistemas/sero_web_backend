@@ -24,6 +24,10 @@ export const getPlaceByUserId = async (req, res) => {
 
 export const getPlaceById = async (req, res) => {
   try {
+
+    const place_id = 0 
+    const sequelize = getDatabaseInstance(place_id) 
+    
     const [placeFound, metadata] = await sequelize.query(`execute sp_get_place_by_id '${req.params.place_id}'`)
 
     console.log("este es el param:" + req.params.place_id)
