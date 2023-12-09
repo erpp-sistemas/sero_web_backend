@@ -13,10 +13,18 @@ import cors from 'cors'
 
 const app = express()
 
+/**
+ * Esta variable permite ejecutar la aplicacion en el 
+ * dominio de digital Ocean erpp.center/sero-web
+ * donde /sero-web indica el puerto donde está ejecutandose,
+ * cuando locationPath se corre desde local, toma un valor indefinido.
+ */
+const locationPath = process.env.LOCATION_PATH;
+
 //Estas lineas se usan cuando se esta trabajando el proyecto a modo local 
 //y se comentan cuando se va a subir a produccion
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: process.env.BASE_URL_FRONT,
     credentials: true
 }));
 
@@ -27,13 +35,13 @@ app.use(morgan('dev'))
 app.use(express.json())
 app.use(cookieParser());
 
-app.use('/api', authRoutes)
-app.use('/api', menuRoutes)
-app.use('/api', placeRoutes)
-app.use('/api', accountHistoryRoutes)
-app.use('/api', serviceRoutes)
-app.use('/api', processRoutes)
-app.use('/api', mapRoutes)
-app.use('/api', assignmentRoutes)
+app.use(`${locationPath}/api`, authRoutes)
+app.use(`${locationPath}/api`, menuRoutes)
+app.use(`${locationPath}/api`, placeRoutes)
+app.use(`${locationPath}/api`, accountHistoryRoutes)
+app.use(`${locationPath}/api`, serviceRoutes)
+app.use(`${locationPath}/api`, processRoutes)
+app.use(`${locationPath}/api`, mapRoutes)
+app.use(`${locationPath}/api`, assignmentRoutes)
 
 export default app
