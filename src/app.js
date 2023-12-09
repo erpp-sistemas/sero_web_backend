@@ -1,6 +1,7 @@
 import express from 'express'
 import morgan from 'morgan'
 import authRoutes from './routes/auth.routes.js'
+
 import menuRoutes from './routes/menu.routes.js'
 import placeRoutes from './routes/place.routes.js'
 import serviceRoutes from './routes/service.routes.js'
