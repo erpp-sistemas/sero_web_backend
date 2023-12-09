@@ -11,6 +11,7 @@ import assignmentRoutes from './routes/assignment.routes.js'
 import accountHistoryRoutes from './routes/accounthistory.routes.js'
 import cookieParser from 'cookie-parser';
 import cors from 'cors'
+import { LOCATION_PATH } from './config/env.js'
 
 const app = express()
 
@@ -20,7 +21,7 @@ const app = express()
  * donde /sero-web indica el puerto donde está ejecutandose,
  * cuando locationPath se corre desde local, toma un valor indefinido.
  */
-const locationPath = process.env.LOCATION_PATH;
+const locationPath = LOCATION_PATH;
 
 //Estas lineas se usan cuando se esta trabajando el proyecto a modo local 
 //y se comentan cuando se va a subir a produccion
