@@ -7,5 +7,6 @@ import * as taskController from '../controllers/task.controller.js';
 const router = Router()
 
 router.post('/task', taskController.createTask);
+router.get('/tasks', taskController.getAllTasks);
 
 export default router
