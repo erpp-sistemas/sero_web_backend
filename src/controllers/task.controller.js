@@ -81,6 +81,59 @@ export const createTask = async (req, res) => {
   }
 };
 
+
+ /**
+   * Deletes a specific task category by its ID from the database.
+   *
+   * @param {Object} req - Express request object.
+   * @param {Object} res - Express response object.
+   * @returns {Promise<void>}
+   * @throws {Error} Throws an error if the deletion fails.
+   */
+ export const deleteTask = async (req, res) => {
+  const taskId = req.params.id;
+
+  console.log(taskId);
+  
+  try {
+    const place_id = 0;
+    const sequelize = getDatabaseInstance(place_id);
+
+      // Execute query to get the task information before deleting
+      const [taskToDelete, taskMetadata] = await sequelize.query(`
+      SELECT * FROM dbo.cat_tarea WHERE id_tarea = :id;
+    `, {
+      replacements: { id: taskId },
+    });
+
+    // Check if the task to delete was found
+    if (taskToDelete && taskToDelete.length > 0) {
+      // Execute query to delete the specific task category by ID
+      const [deletedTask, deleteMetadata] = await sequelize.query(`
+        DELETE FROM dbo.cat_tarea WHERE id_tarea = :id;
+      `, {
+        replacements: { id: taskId },
+      });
+  
+
+      // Check if the task was deleted successfully
+     
+        // Send a success response with the deleted task data
+        res.json({
+          message: 'Task category deleted successfully',
+          deletedTask: taskToDelete[0], // Assuming you want the first record if multiple
+        });
+     
+    } else {
+      res.status(404).json({ message: 'Task category not found' });
+    }
+  } catch (error) {
+    // Log the error and send a 500 status with a JSON response
+    console.error(error);
+    res.status(500).json({ message: 'Failed to delete task category' });
+  }
+};
+
 /**
  * Extracts task data from the request body.
  *
