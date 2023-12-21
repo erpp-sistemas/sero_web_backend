@@ -102,3 +102,34 @@ const extractTaskData = (requestBody) => {
 
   return { nombre, activo, id_proceso };
 };
+
+
+/**
+ * Retrieves all task categories from the database.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Promise<void>}
+ * @throws {Error} Throws an error if the retrieval fails.
+ */
+export const getAllTasks = async (req, res) => {
+  try {
+    const place_id = 0;
+    const sequelize = getDatabaseInstance(place_id);
+
+    // Execute query to get all task categories
+    const [tasks, metadata] = await sequelize.query(`
+      SELECT * FROM dbo.cat_tarea;
+    `);
+
+  
+
+    // Send the retrieved tasks as a JSON response
+    res.json(tasks);
+  } catch (error) {
+    // Log the error and send a 500 status with a JSON response
+    console.error(error);
+    res.status(500).json({ message: 'Failed to retrieve task categories' });
+  }
+};
+
