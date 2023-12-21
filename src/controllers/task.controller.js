@@ -90,9 +90,7 @@ export const createTask = async (req, res) => {
  */
 
 const extractTaskData = (requestBody) => {
-  console.log("***********");
-  console.log(requestBody);
-  console.log("***********");
+ 
 
   const { nombre, activo, id_proceso } = requestBody;
 
