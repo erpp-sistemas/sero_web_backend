@@ -13,4 +13,7 @@ router.post('/processes', processController.createProcess);
 router.get('/processes', processController.getAllProcesses);
 // Ruta para actualizar un proceso por su ID
 router.put('/processes/:id', processController.updateProcess);
+
+// Ruta para eliminar un proceso por su ID
+router.delete('/processes/:id', processController.deleteProcess);
 export default router
