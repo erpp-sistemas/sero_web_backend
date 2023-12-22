@@ -194,3 +194,40 @@ export const updateService = async (req, res) => {
     res.status(500).json({ message: 'Failed to update service' });
   }
 };
+
+/*
+ **
+ * Deletes a specific service by its ID from the database.
+ *
+ * @param {number} serviceId - The ID of the service to delete.
+ * @returns {Promise<void>} A promise that resolves once the service is deleted.
+ * @throws {Error} Throws an error if the deletion fails.
+ */
+ export const deleteService = async (req,res) => {
+
+  const serviceId = req.params.id;
+  console.log(serviceId);
+  try {
+    const place_id = 0;
+    const sequelize = getDatabaseInstance(place_id);
+
+    // Execute query to delete a specific service by ID
+    const [deletedService, metadata] = await sequelize.query(
+      `
+      DELETE FROM [dbo].[servicio] WHERE [id_servicio] = :id;
+    `,
+      {
+        replacements: { id: serviceId },
+      }
+    );
+
+    
+
+/*     if (!(deletedService && deletedService.length > 0)) {
+      throw new Error("Service not found");
+    } */
+  } catch (error) {
+    console.log(error);
+  
+  }
+};
