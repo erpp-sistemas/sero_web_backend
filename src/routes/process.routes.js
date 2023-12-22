@@ -9,5 +9,6 @@ const router = Router()
 router.get('/PlaceServiceProcessByUserId/:user_id', processController.getPlaceServiceProcessByUserId)
 // Ruta para crear un nuevo proceso
 router.post('/processes', processController.createProcess);
-console.log("s")
+// Ruta para obtener todos los procesos
+router.get('/processes', processController.getAllProcesses);
 export default router
