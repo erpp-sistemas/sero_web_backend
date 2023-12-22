@@ -9,5 +9,7 @@ const router = Router()
 router.get('/PlaceServiceByUserId/:user_id/:place_id', serviceController.getPlaceServiceByUserId)
 // Ruta para crear un nuevo servicio
 router.post('/services', serviceController.createService);
+// Ruta para obtener todas los servicios
+router.get('/services', serviceController.getAllServices);
 
 export default router
