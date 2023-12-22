@@ -146,3 +146,51 @@ export const getAllServices = async (req,res) => {
     throw new Error("Failed to retrieve services");
   }
 };
+/**
+ * Updates a specific service by its ID in the database.
+ *
+ * @param {number} serviceId - The ID of the service to update.
+ * @param {Object} updatedServiceData - The updated service data.
+ * @returns {Promise<void>} A promise that resolves once the service is updated.
+ * @throws {Error} Throws an error if the update fails.
+ */
+export const updateService = async (req, res) => {
+  const serviceId = req.params.id_service;
+  const updatedServiceData = req.body
+  
+  try {
+    const place_id = 0;
+    const sequelize = getDatabaseInstance(place_id);
+
+    // Execute query to update a specific service by ID
+    const [updatedService, metadata] = await sequelize.query(
+      `
+      UPDATE [dbo].[servicio]
+      SET [nombre] = :nombre, [imagen] = :imagen, [activo] = :activo, [orden] = :orden, [fecha_ingreso] = :fecha_ingreso, [icono_app_movil] = :icono_app_movil
+      OUTPUT inserted.*
+      WHERE id_servicio = :id;
+    `,
+      {
+        replacements: { id: serviceId, ...updatedServiceData },
+      }
+    );
+/* "id_servicio": 1,
+      "nombre": "Regularización agua",
+      "imagen": "imagen_no_disponible.jpg",
+      "activo": true,
+      "orden": 0,
+      "fecha_ingreso": "2021-12-09T22:23:31.730Z",
+      "icono_app_movil": "water" */
+        console.log(updatedService);
+    if (updatedService && updatedService.length > 0) {
+      res.json({ message: 'Service updated successfully', updatedService });
+    } else {
+      res.status(404).json({ message: 'Task not found or not updated' });
+    }
+  } catch (error) {
+ 
+   
+    console.error(error);
+    res.status(500).json({ message: 'Failed to update service' });
+  }
+};
