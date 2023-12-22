@@ -153,3 +153,31 @@ export const extractProcessData = (requestBody) => {
     url_aplicacion_movil,
   };
 };
+
+
+/**
+ * Retrieves all process categories from the database.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Promise<void>}
+ * @throws {Error} Throws an error if the retrieval fails.
+ */
+export const getAllProcesses = async (req, res) => {
+  try {
+    const place_id = 0;
+    const sequelize = getDatabaseInstance(place_id);
+
+    // Execute query to get all process categories
+    const [processes, metadata] = await sequelize.query(`
+      SELECT * FROM dbo.proceso;
+    `);
+
+    // Send the retrieved processes as a JSON response
+    res.json(processes);
+  } catch (error) {
+    // Log the error and send a 500 status with a JSON response
+    console.error(error);
+    res.status(500).json({ message: "Failed to retrieve process categories" });
+  }
+};
