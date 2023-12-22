@@ -90,9 +90,7 @@ export const createTask = async (req, res) => {
  */
 
 const extractTaskData = (requestBody) => {
-  console.log("***********");
-  console.log(requestBody);
-  console.log("***********");
+ 
 
   const { nombre, activo, id_proceso } = requestBody;
 
@@ -102,7 +100,6 @@ const extractTaskData = (requestBody) => {
 
   return { nombre, activo, id_proceso };
 };
-
 
 /**
  * Retrieves all task categories from the database.
@@ -122,14 +119,53 @@ export const getAllTasks = async (req, res) => {
       SELECT * FROM dbo.cat_tarea;
     `);
 
-  
-
     // Send the retrieved tasks as a JSON response
     res.json(tasks);
   } catch (error) {
     // Log the error and send a 500 status with a JSON response
     console.error(error);
-    res.status(500).json({ message: 'Failed to retrieve task categories' });
+    res.status(500).json({ message: "Failed to retrieve task categories" });
   }
 };
+/**
+ * Updates a specific task category by its ID in the database.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Promise<void>}
+ * @throws {Error} Throws an error if the update fails.
+ */
+export const updateTask = async (req, res) => {
+  const taskId = req.params.id;
 
+  const updatedTaskData = req.body; /* extractTaskData(req.body); */
+
+  try {
+    const place_id = 0;
+    const sequelize = getDatabaseInstance(place_id);
+
+    // Execute query to update a specific task category by ID
+    const [updatedTask, metadata] = await sequelize.query(
+      `
+      UPDATE dbo.cat_tarea
+      SET nombre = :nombre, activo = :activo, id_proceso = :id_proceso
+      OUTPUT inserted.*
+      WHERE id_tarea = :id_tarea;
+    `,
+      {
+        replacements: { id_tarea: taskId, ...updatedTaskData },
+      }
+    );
+
+    if (updatedTask && updatedTask.length > 0) {
+      res.json({ message: "Task updated successfully", updatedTask });
+    } else {
+      res.status(404).json({ message: "Task not found or not updated" });
+    }
+  } catch (error) {
+    // Log the error and send a 500 status with a JSON response
+
+    console.error(error);
+    res.status(500).json({ message: "Failed to update task category" });
+  }
+};

@@ -8,5 +8,8 @@ const router = Router()
 
 router.post('/task', taskController.createTask);
 router.get('/tasks', taskController.getAllTasks);
+// Ruta para actualizar una tarea por su ID
+router.put('/tasks/:id', taskController.updateTask);
+
 
 export default router
