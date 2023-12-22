@@ -181,3 +181,49 @@ export const getAllProcesses = async (req, res) => {
     res.status(500).json({ message: "Failed to retrieve process categories" });
   }
 };
+
+
+/**
+ * Updates a specific process category by its ID in the database.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Promise<void>}
+ * @throws {Error} Throws an error if the update fails.
+ */
+export const updateProcess = async (req, res) => {
+  const processId = req.params.id;
+  const updatedProcessData = extractProcessData(req.body);
+
+  try {
+    const place_id = 0;
+    const sequelize = getDatabaseInstance(place_id);
+
+    // Execute query to update a specific process category by ID
+    const [updatedProcess, metadata] = await sequelize.query(
+      `
+      UPDATE dbo.proceso
+      SET
+        nombre = :nombre,
+        imagen = :imagen,
+        activo = :activo,
+        procedimiento_almacenado_gestion = :procedimiento_almacenado_gestion,
+        procedimiento_almacenado_gestion_grafico = :procedimiento_almacenado_gestion_grafico,
+        tabla_gestion = :tabla_gestion,
+        url_aplicacion_movil = :url_aplicacion_movil
+      WHERE id_proceso = :id ;
+    `,
+      {
+        replacements: { id: processId, ...updatedProcessData },
+      }
+    );
+
+    
+    res.json({ message: "Process category updated successfully" });
+    
+  } catch (error) {
+    // Log the error and send a 500 status with a JSON response
+    console.error(error);
+    res.status(500).json({ message: "Failed to update process category" });
+  }
+};
