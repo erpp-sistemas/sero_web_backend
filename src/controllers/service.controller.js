@@ -119,3 +119,30 @@ const extractServiceData = (requestBody) => {
     icono_app_movil,
   };
 };
+
+
+/**
+ * Retrieves all services from the database.
+ *
+ * @returns {Promise<Array>} A promise that resolves to an array of services.
+ * @throws {Error} Throws an error if the retrieval fails.
+ */
+
+export const getAllServices = async (req,res) => {
+  console.log("entrando la funcion");
+  try {
+    const place_id = 0;
+    const sequelize = getDatabaseInstance(place_id);
+    console.log(sequelize);
+
+    // Execute query to get all services
+    const [services, metadata] = await sequelize.query(`
+      SELECT * FROM dbo.servicio;
+    `);
+  
+     res.json({services});
+  } catch (error) {
+    console.log(error);
+    throw new Error("Failed to retrieve services");
+  }
+};
