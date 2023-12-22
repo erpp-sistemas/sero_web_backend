@@ -6,7 +6,7 @@ import {registerSchema, loginSchema} from '../schemas/auth.schema.js'
 
 const router = Router()
 
-router.get('/PlaceServiceProcessByUserId/:user_id', processController.getPlaceServiceProcessByUserId)
+router.get('/PlaceServiceProcessByUserId/:user_id/:place_id/:service_id', processController.getPlaceServiceProcessByUserId)
 // Ruta para crear un nuevo proceso
 router.post('/processes', processController.createProcess);
 // Ruta para obtener todos los procesos
