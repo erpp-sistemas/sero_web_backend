@@ -11,4 +11,6 @@ router.get('/PlaceServiceProcessByUserId/:user_id', processController.getPlaceSe
 router.post('/processes', processController.createProcess);
 // Ruta para obtener todos los procesos
 router.get('/processes', processController.getAllProcesses);
+// Ruta para actualizar un proceso por su ID
+router.put('/processes/:id', processController.updateProcess);
 export default router
