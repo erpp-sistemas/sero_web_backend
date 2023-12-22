@@ -10,6 +10,8 @@ router.post('/task', taskController.createTask);
 router.get('/tasks', taskController.getAllTasks);
 // Ruta para actualizar una tarea por su ID
 router.put('/tasks/:id', taskController.updateTask);
+// Ruta para eliminar una tarea por su ID
+router.delete('/tasks/:id', taskController.deleteTask);
 
 
 export default router
