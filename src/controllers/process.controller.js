@@ -6,7 +6,12 @@ export const getPlaceServiceProcessByUserId = async (req, res) => {
   const sequelize = getDatabaseInstance(place_id) 
 
     try {
-      const [processFound, metadata] = await sequelize.query(`execute sp_get_place_service_process_by_user_id '${req.params.user_id}'`)
+
+      console.log("este es el param:" + req.params.user_id)
+      console.log("este es el param:" + req.params.place_id)
+      console.log("este es el param:" + req.params.service_id)
+      
+      const [processFound, metadata] = await sequelize.query(`execute sp_get_place_service_process_by_user_id '${req.params.user_id}','${req.params.place_id}','${req.params.service_id}'`)
 
       if(!processFound[0]) return res.status(400).json({
         message: "not found process"
