@@ -227,3 +227,43 @@ export const updateProcess = async (req, res) => {
     res.status(500).json({ message: "Failed to update process category" });
   }
 };
+
+/**
+ * Deletes a specific process category by its ID from the database.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Promise<void>}
+ * @throws {Error} Throws an error if the deletion fails.
+ */
+export const deleteProcess = async (req, res) => {
+  const processId = req.params.id;
+
+  try {
+    const place_id = 0;
+    const sequelize = getDatabaseInstance(place_id);
+
+    // Execute query to delete a specific process category by ID
+    const [deletedProcess, metadata] = await sequelize.query(
+      `
+      DELETE FROM dbo.proceso WHERE id_proceso = :id;
+    `,
+      {
+        replacements: { id: processId },
+      }
+    );
+
+    // Check if the process was deleted successfully
+    if (deletedProcess && deletedProcess.length > 0) {
+      // Send a success response or additional data as needed
+      res.json({ message: "Process category deleted successfully" });
+    } else {
+      res.status(404).json({ message: "Process category not found" });
+    }
+  } catch (error) {
+    // Log the error and send a 500 status with a JSON response
+    console.error(error);
+    res.status(500).json({ message: "Failed to delete process category" });
+  }
+};
+
