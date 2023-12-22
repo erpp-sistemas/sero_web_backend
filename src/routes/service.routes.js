@@ -12,4 +12,7 @@ router.post('/services', serviceController.createService);
 // Ruta para obtener todas los servicios
 router.get('/services', serviceController.getAllServices);
 
+// Ruta para eliminar un servicio por su ID
+router.delete('/services/:id', serviceController.deleteService);
+
 export default router
