@@ -11,7 +11,8 @@ router.get('/PlaceServiceByUserId/:user_id/:place_id', serviceController.getPlac
 router.post('/services', serviceController.createService);
 // Ruta para obtener todas los servicios
 router.get('/services', serviceController.getAllServices);
-
+// Ruta para actualizar un servicio por su ID
+router.put('/service/:id', serviceController.updateService);
 // Ruta para eliminar un servicio por su ID
 router.delete('/services/:id', serviceController.deleteService);
 
