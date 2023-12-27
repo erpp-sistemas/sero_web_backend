@@ -11,6 +11,7 @@ import accountHistoryRoutes from './routes/accounthistory.routes.js'
 import cookieParser from 'cookie-parser';
 import taskRoutes from './routes/task.routes.js'
 import cors from 'cors'
+import paymentRoutes from './routes/payment.routes.js'
 
 const app = express()
 
@@ -37,5 +38,6 @@ app.use('/api', processRoutes)
 app.use('/api', mapRoutes)
 app.use('/api', assignmentRoutes)
 app.use('/api', taskRoutes)
+app.use('/api', paymentRoutes)
 
 export default app
