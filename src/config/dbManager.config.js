@@ -42,7 +42,7 @@ const dbManager = {
     }
   ),
   sero_naucalpan: new Sequelize("sero_naucalpan", "sa", "Erpp123.", {
-    host: "172.25.3.116",
+    host: "201.163.165.20",
     dialect: "mssql",
     dialectOptions: {
       options: {
