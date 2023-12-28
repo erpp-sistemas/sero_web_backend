@@ -122,3 +122,42 @@ export const getAllRoles = async (req, res) => {
     }
   };
   
+
+  
+/**
+ * Actualiza un rol específico por su ID en la base de datos.
+ *
+ * @param {Object} req - Objeto de solicitud Express.
+ * @param {Object} res - Objeto de respuesta Express.
+ * @returns {Promise<void>}
+ * @throws {Error} Lanza un error si falla la actualización.
+ */
+export const updateRol = async (req, res) => {
+    const rolId = req.params.id;
+    const updatedRolData = extractRolData(req.body);
+  
+    try {
+      const place_id = 0;
+      const sequelize = getDatabaseInstance(place_id);
+  
+      // Ejecuta la consulta para actualizar un rol específico por su ID
+      const [updatedRol, metadata] = await sequelize.query(
+        `
+        UPDATE db_prueba.dbo.rol
+        SET
+          nombre = :nombre,
+          activo = :activo
+        WHERE id_rol = :id ;
+      `,
+        {
+          replacements: { id: rolId, ...updatedRolData },
+        }
+      );
+  
+      res.json({ message: "Rol actualizado exitosamente" });
+    } catch (error) {
+      // Registra el error y envía un estado 500 con una respuesta JSON
+      console.error(error);
+      res.status(500).json({ message: "Error al actualizar el rol" });
+    }
+  };
