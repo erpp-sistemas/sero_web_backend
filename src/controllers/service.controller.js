@@ -222,10 +222,13 @@ export const updateService = async (req, res) => {
     );
 
     
-
-/*     if (!(deletedService && deletedService.length > 0)) {
-      throw new Error("Service not found");
-    } */
+ // Check if the process was deleted successfully
+ if (metadata > 0) {
+  // Send a success response or additional data as needed
+  res.json({ message: "Service deleted successfully" });
+} else {
+  res.status(404).json({ message: "service not found" });
+}
   } catch (error) {
     console.log(error);
   

@@ -1,32 +1,31 @@
 import { getDatabaseInstance } from "../config/dbManager.config.js";
 import Joi from "joi";
 export const getPlaceServiceProcessByUserId = async (req, res) => {
-  
-  const place_id = 0 
-  const sequelize = getDatabaseInstance(place_id) 
+  const place_id = 0;
+  const sequelize = getDatabaseInstance(place_id);
 
-    try {
+  try {
+    console.log("este es el param user_id:" + req.params.user_id);
+    console.log("este es el param place_id:" + req.params.place_id);
+    console.log("este es el param service_id:" + req.params.service_id);
 
-      console.log("este es el param user_id:" + req.params.user_id)
-      console.log("este es el param place_id:" + req.params.place_id)
-      console.log("este es el param service_id:" + req.params.service_id)
-      
-      const [processFound, metadata] = await sequelize.query(`execute sp_get_place_service_process_by_user_id '${req.params.user_id}','${req.params.place_id}','${req.params.service_id}'`)
+    const [processFound, metadata] = await sequelize.query(
+      `execute sp_get_place_service_process_by_user_id '${req.params.user_id}','${req.params.place_id}','${req.params.service_id}'`
+    );
 
-      if(!processFound[0]) return res.status(400).json({
-        message: "not found process"
-      })      
-    
-      res.json(processFound)
+    if (!processFound[0])
+      return res.status(400).json({
+        message: "not found process",
+      });
 
-    } catch (error) {
-      console.log(error)
-      return res.status(404).json({message: 'process not found'})
-    }  
+    res.json(processFound);
+  } catch (error) {
+    console.log(error);
+    return res.status(404).json({ message: "process not found" });
   }
+};
 
-
-  /**
+/**
  * Validation schema for creating a process.
  * @typedef {Object} CreateProcessSchema
  * @property {string} name - The name of the process. Required.
@@ -45,9 +44,9 @@ const createProcessSchema = Joi.object({
   procedimiento_almacenado_gestion_grafico: Joi.string(),
   tabla_gestion: Joi.string(),
   url_aplicacion_movil: Joi.string(),
-  });
+});
 
-  /**
+/**
  * Creates a new process category using the provided data.
  *
  * @param {Object} req - Express request object.
@@ -144,7 +143,7 @@ export const extractProcessData = (requestBody) => {
     url_aplicacion_movil,
   } = requestBody;
 
- /*  if (!nombre || !imagen  || !procedimiento_almacenado_gestion || !procedimiento_almacenado_gestion_grafico || !tabla_gestion || !url_aplicacion_movil) {
+  /*  if (!nombre || !imagen  || !procedimiento_almacenado_gestion || !procedimiento_almacenado_gestion_grafico || !tabla_gestion || !url_aplicacion_movil) {
     throw new Error("Invalid request body. Missing required properties.");
   } */
 
@@ -158,7 +157,6 @@ export const extractProcessData = (requestBody) => {
     url_aplicacion_movil,
   };
 };
-
 
 /**
  * Retrieves all process categories from the database.
@@ -187,7 +185,6 @@ export const getAllProcesses = async (req, res) => {
   }
 };
 
-
 /**
  * Updates a specific process category by its ID in the database.
  *
@@ -199,6 +196,7 @@ export const getAllProcesses = async (req, res) => {
 export const updateProcess = async (req, res) => {
   const processId = req.params.id;
   const updatedProcessData = extractProcessData(req.body);
+  console.log(updatedProcessData);
 
   try {
     const place_id = 0;
@@ -223,9 +221,7 @@ export const updateProcess = async (req, res) => {
       }
     );
 
-    
     res.json({ message: "Process category updated successfully" });
-    
   } catch (error) {
     // Log the error and send a 500 status with a JSON response
     console.error(error);
@@ -257,9 +253,10 @@ export const deleteProcess = async (req, res) => {
         replacements: { id: processId },
       }
     );
+    
 
     // Check if the process was deleted successfully
-    if (deletedProcess && deletedProcess.length > 0) {
+    if (metadata > 0) {
       // Send a success response or additional data as needed
       res.json({ message: "Process category deleted successfully" });
     } else {
@@ -271,4 +268,3 @@ export const deleteProcess = async (req, res) => {
     res.status(500).json({ message: "Failed to delete process category" });
   }
 };
-
