@@ -116,16 +116,12 @@ export const createTask = async (req, res) => {
       });
   
 
-      // Check if the task was deleted successfully
-     
-        // Send a success response with the deleted task data
-        res.json({
-          message: 'Task category deleted successfully',
-          deletedTask: taskToDelete[0], // Assuming you want the first record if multiple
-        });
-     
-    } else {
-      res.status(404).json({ message: 'Task category not found' });
+      if (deleteMetadata > 0) {
+        // Send a success response or additional data as needed
+        res.json({ message: "Service deleted successfully" });
+      } else {
+        res.status(404).json({ message: "service not found" });
+      }
     }
   } catch (error) {
     // Log the error and send a 500 status with a JSON response
