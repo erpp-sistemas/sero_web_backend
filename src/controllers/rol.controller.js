@@ -161,3 +161,44 @@ export const updateRol = async (req, res) => {
       res.status(500).json({ message: "Error al actualizar el rol" });
     }
   };
+
+
+  
+/**
+ * Elimina un rol específico por su ID de la base de datos.
+ *
+ * @param {Object} req - Objeto de solicitud Express.
+ * @param {Object} res - Objeto de respuesta Express.
+ * @returns {Promise<void>}
+ * @throws {Error} Lanza un error si falla la eliminación.
+ */
+export const deleteRol = async (req, res) => {
+    const rolId = req.params.id;
+  
+    try {
+      const place_id = 0;
+      const sequelize = getDatabaseInstance(place_id);
+  
+      // Ejecuta la consulta para eliminar un rol específico por su ID
+      const [deletedRol, metadata] = await sequelize.query(
+        `
+        DELETE FROM db_prueba.dbo.rol WHERE id_rol = :id;
+      `,
+        {
+          replacements: { id: rolId },
+        }
+      );
+  
+      // Verifica si el rol se eliminó correctamente
+      if (metadata > 0) {
+        // Envía una respuesta de éxito o datos adicionales según sea necesario
+        res.json({ message: "Rol eliminado exitosamente" });
+      } else {
+        res.status(404).json({ message: "Rol no encontrado" });
+      }
+    } catch (error) {
+      // Registra el error y envía un estado 500 con una respuesta JSON
+      console.error(error);
+      res.status(500).json({ message: "Error al eliminar el rol" });
+    }
+  };
