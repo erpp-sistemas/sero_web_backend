@@ -170,3 +170,47 @@ export const getAllMenus = async (req, res) => {
     res.status(500).json({ message: "Error al recuperar los menús" });
   }
 };
+
+
+/**
+ * Actualiza un menú específico por su ID en la base de datos.
+ *
+ * @param {Object} req - Objeto de solicitud Express.
+ * @param {Object} res - Objeto de respuesta Express.
+ * @returns {Promise<void>}
+ * @throws {Error} Lanza un error si falla la actualización.
+ */
+export const updateMenu = async (req, res) => {
+  const menuId = req.params.id;
+  const updatedMenuData = extractMenuData(req.body);
+
+  try {
+    const place_id = 0;
+    const sequelize = getDatabaseInstance(place_id);
+
+    // Ejecuta la consulta para actualizar un menú específico por su ID
+    const [updatedMenu, metadata] = await sequelize.query(`
+        UPDATE db_prueba.dbo.menu
+        SET
+          nombre = :nombre,
+          descripcion = :descripcion,
+          url = :url,
+          icono = :icono,
+          activo = :activo,
+          icon_mui = :icon_mui,
+          route = :route,
+          id_menu_padre = :id_menu_padre
+        WHERE id_menu = :id;
+      `,
+      {
+        replacements: { id: menuId, ...updatedMenuData },
+      }
+    );
+
+    res.json({ message: "Menú actualizado exitosamente" });
+  } catch (error) {
+    // Registra el error y envía un estado 500 con una respuesta JSON
+    console.error(error);
+    res.status(500).json({ message: "Error al actualizar el menú" });
+  }
+};
