@@ -214,3 +214,42 @@ export const updateMenu = async (req, res) => {
     res.status(500).json({ message: "Error al actualizar el menú" });
   }
 };
+
+
+/**
+ * Elimina un menú específico por su ID de la base de datos.
+ *
+ * @param {Object} req - Objeto de solicitud Express.
+ * @param {Object} res - Objeto de respuesta Express.
+ * @returns {Promise<void>}
+ * @throws {Error} Lanza un error si falla la eliminación.
+ */
+export const deleteMenu = async (req, res) => {
+  const menuId = req.params.id;
+
+  try {
+    const place_id = 0;
+    const sequelize = getDatabaseInstance(place_id);
+
+    // Ejecuta la consulta para eliminar un menú específico por su ID
+    const [deletedMenu, metadata] = await sequelize.query(`
+        DELETE FROM db_prueba.dbo.menu WHERE id_menu = :id;
+      `,
+      {
+        replacements: { id: menuId },
+      }
+    );
+
+    // Verifica si el menú se eliminó correctamente
+    if (metadata > 0) {
+      // Envía una respuesta de éxito o datos adicionales según sea necesario
+      res.json({ message: "Menú eliminado exitosamente" });
+    } else {
+      res.status(404).json({ message: "Menú no encontrado" });
+    }
+  } catch (error) {
+    // Registra el error y envía un estado 500 con una respuesta JSON
+    console.error(error);
+    res.status(500).json({ message: "Error al eliminar el menú" });
+  }
+};
