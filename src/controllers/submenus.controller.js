@@ -261,3 +261,44 @@ export const updateSubMenu = async (req, res) => {
       res.status(500).json({ message: "Error al actualizar el submenú" });
     }
   };
+
+
+
+  
+/**
+ * Elimina un submenú específico por su ID de la base de datos.
+ *
+ * @param {Object} req - Objeto de solicitud Express.
+ * @param {Object} res - Objeto de respuesta Express.
+ * @returns {Promise<void>}
+ * @throws {Error} Lanza un error si falla la eliminación.
+ */
+export const deleteSubMenu = async (req, res) => {
+    const subMenuId = req.params.id;
+  
+    try {
+      const place_id = 0;
+      const sequelize = getDatabaseInstance(place_id);
+  
+      // Ejecuta la consulta para eliminar un submenú específico por su ID
+      const [deletedSubMenu, metadata] = await sequelize.query(`
+          DELETE FROM db_prueba.dbo.sub_menu WHERE id_sub_menu = :id;
+        `,
+        {
+          replacements: { id: subMenuId },
+        }
+      );
+  
+      // Verifica si el submenú se eliminó correctamente
+      if (metadata > 0) {
+        // Envía una respuesta de éxito o datos adicionales según sea necesario
+        res.json({ message: "Submenú eliminado exitosamente" });
+      } else {
+        res.status(404).json({ message: "Submenú no encontrado" });
+      }
+    } catch (error) {
+      // Registra el error y envía un estado 500 con una respuesta JSON
+      console.error(error);
+      res.status(500).json({ message: "Error al eliminar el submenú" });
+    }
+  };
