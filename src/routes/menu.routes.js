@@ -19,7 +19,7 @@ const router = Router()
 router.get('/MenusUserId/:user_id', menuController.getMenusUserId)
 router.post('/menus', menuController.createMenu);
 router.get('/menus', menuController.getAllMenus);
-router.put('/menus/{id}', menuController.updateMenu);
-router.delete('/menus/{id}', menuController.deleteMenu);
+router.put('/menus/:id', menuController.updateMenu);
+router.delete('/menus/:id', menuController.deleteMenu);
 
 export default router
