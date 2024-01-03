@@ -174,4 +174,5 @@ export const updateSubMenu = async (req, res) => {
       console.error(error);
       res.status(500).json({ message: "Error al actualizar el submenú" });
     }
+
   };
