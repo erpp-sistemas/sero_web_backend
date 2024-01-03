@@ -134,7 +134,7 @@ export const getAllSubMenus = async (req, res) => {
       // Ejecuta la consulta para obtener todos los submenús
       const [subMenus, metadata] = await sequelize.query(`
           SELECT id_sub_menu, id_menu_padre, nombre, descripcion, url, icono, activo, icon_mui, route
-          FROM db_prueba.dbo.sub_menu;
+          FROM dbo.sub_menu;
         `);
   
       // Envía los submenús recuperados como una respuesta JSON
