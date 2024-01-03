@@ -148,6 +148,7 @@ export const updateSubMenu = async (req, res) => {
     try {
       const place_id = 0;
       const sequelize = getDatabaseInstance(place_id);
+
    ///ff
       // Ejecuta la consulta para actualizar un submenú específico por su ID
       const [updatedSubMenu, metadata] = await sequelize.query(`
@@ -235,6 +236,7 @@ export const updateSubMenu = async (req, res) => {
       const place_id = 0;
       const sequelize = getDatabaseInstance(place_id);
    ///ff
+
       // Ejecuta la consulta para actualizar un submenú específico por su ID
       const [updatedSubMenu, metadata] = await sequelize.query(`
           UPDATE db_prueba.dbo.sub_menu
@@ -260,4 +262,5 @@ export const updateSubMenu = async (req, res) => {
       console.error(error);
       res.status(500).json({ message: "Error al actualizar el submenú" });
     }
+
   };
