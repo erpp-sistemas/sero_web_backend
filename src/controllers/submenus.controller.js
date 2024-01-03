@@ -131,3 +131,48 @@ export const getAllSubMenus = async (req, res) => {
       res.status(500).json({ message: "Error al recuperar los submenús" });
     }
   };
+
+
+  /**
+ * Actualiza un submenú específico por su ID en la base de datos.
+ *
+ * @param {Object} req - Objeto de solicitud Express.
+ * @param {Object} res - Objeto de respuesta Express.
+ * @returns {Promise<void>}
+ * @throws {Error} Lanza un error si falla la actualización.
+ */
+export const updateSubMenu = async (req, res) => {
+    const subMenuId = req.params.id;
+    const updatedSubMenuData = extractSubMenuData(req.body);
+  
+    try {
+      const place_id = 0;
+      const sequelize = getDatabaseInstance(place_id);
+  
+      // Ejecuta la consulta para actualizar un submenú específico por su ID
+      const [updatedSubMenu, metadata] = await sequelize.query(`
+          UPDATE db_prueba.dbo.sub_menu
+          SET
+            nombre = :nombre,
+            descripcion = :descripcion,
+            url = :url,
+            icono = :icono,
+            activo = :activo,
+            icon_mui = :icon_mui,
+            route = :route,
+            id_menu_padre = :id_menu_padre
+          WHERE id_sub_menu = :id;
+        `,
+        {
+          replacements: { id: subMenuId, ...updatedSubMenuData },
+        }
+      );
+  
+      res.json({ message: "Submenú actualizado exitosamente" });
+    } catch (error) {
+      // Registra el error y envía un estado 500 con una respuesta JSON
+      console.error(error);
+      res.status(500).json({ message: "Error al actualizar el submenú" });
+    }
+
+  };
