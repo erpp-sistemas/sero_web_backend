@@ -102,3 +102,32 @@ export const extractSubMenuData = (requestBody) => {
       id_menu_padre,
     };
   };
+
+
+  /**
+ * Obtiene todos los submenús de la base de datos.
+ *
+ * @param {Object} req - Objeto de solicitud Express.
+ * @param {Object} res - Objeto de respuesta Express.
+ * @returns {Promise<void>}
+ * @throws {Error} Lanza un error si falla la recuperación.
+ */
+export const getAllSubMenus = async (req, res) => {
+    try {
+      const place_id = 0;
+      const sequelize = getDatabaseInstance(place_id);
+  
+      // Ejecuta la consulta para obtener todos los submenús
+      const [subMenus, metadata] = await sequelize.query(`
+          SELECT id_sub_menu, id_menu_padre, nombre, descripcion, url, icono, activo, icon_mui, route
+          FROM db_prueba.dbo.sub_menu;
+        `);
+  
+      // Envía los submenús recuperados como una respuesta JSON
+      res.json(subMenus);
+    } catch (error) {
+      // Registra el error y envía un estado 500 con una respuesta JSON
+      console.error(error);
+      res.status(500).json({ message: "Error al recuperar los submenús" });
+    }
+  };
