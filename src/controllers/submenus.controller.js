@@ -217,9 +217,6 @@ export const deleteSubMenu = async (req, res) => {
     }
   };
 
-
-  
-
   /**
  * Actualiza un submenú específico por su ID en la base de datos.
  *
