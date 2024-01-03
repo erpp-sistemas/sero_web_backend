@@ -2,7 +2,21 @@ import { getDatabaseInstance } from "../config/dbManager.config.js";
 import Joi from 'joi';
 
 
-
+/**
+ * Schema for validating the request body when creating a new sub-menu.
+ *
+ * @type {Joi.ObjectSchema}
+ */
+const createSubMenuSchema = Joi.object({
+  nombre: Joi.string().required().trim(),
+  descripcion: Joi.string().allow('').trim(),
+  url: Joi.string().allow('').trim(),
+  icono: Joi.string().allow('').trim(),
+  activo: Joi.boolean().required(),
+  icon_mui: Joi.string().allow('').trim(),
+  route: Joi.string().allow('').trim(),
+  id_menu_padre: Joi.number().required(),
+});
 
 /**
  * Crea un nuevo submenú utilizando los datos proporcionados.

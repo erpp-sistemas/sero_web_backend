@@ -13,6 +13,7 @@ import taskRoutes from './routes/task.routes.js'
 import cors from 'cors'
 import paymentRoutes from './routes/payment.routes.js'
 import rolRoutes from './routes/rol.routes.js'
+import submenuRoutes from './routes/submenu.routes.js'
 
 const app = express()
 
@@ -41,5 +42,6 @@ app.use('/api', assignmentRoutes)
 app.use('/api', taskRoutes)
 app.use('/api', paymentRoutes)
 app.use('/api', rolRoutes)
+app.use('/api',submenuRoutes)
 
 export default app
