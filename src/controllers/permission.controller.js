@@ -381,6 +381,61 @@ export const updateMenuRol = async (req, res) => {
       res.status(500).json({ message: "Failed to update menu_rol entry" });
     }
   };
+
+
+  /**
+ * Deletes a specific menu_rol entry by its ID from the database.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Promise<void>}
+ * @throws {Error} Throws an error if the deletion fails.
+ */
+export const deleteMenuRol = async (req, res) => {
+    const menuRolId = req.params.id;
+  
+    try {
+      const place_id = 0;
+      const sequelize = getDatabaseInstance(place_id);
+  
+      // Execute query to get the menu_rol information before deleting
+      const [menuRolToDelete, menuRolMetadata] = await sequelize.query(
+        `
+        SELECT * FROM db_prueba.dbo.menu_rol WHERE id_menu_rol = :id;
+      `,
+        {
+          replacements: { id: menuRolId },
+        }
+      );
+  
+      // Check if the menu_rol entry to delete was found
+      if (
+        menuRolToDelete &&
+        menuRolToDelete.length > 0
+      ) {
+        // Execute query to delete the specific menu_rol entry by ID
+        const [deletedMenuRol, deleteMetadata] = await sequelize.query(
+          `
+          DELETE FROM db_prueba.dbo.menu_rol WHERE id_menu_rol = :id;
+        `,
+          {
+            replacements: { id: menuRolId },
+          }
+        );
+  
+        if (deleteMetadata > 0) {
+          // Send a success response or additional data as needed
+          res.json({ message: "menu_rol entry deleted successfully" });
+        } else {
+          res.status(404).json({ message: "menu_rol entry not found" });
+        }
+      }
+    } catch (error) {
+      // Log the error and send a 500 status with a JSON response
+      console.error(error);
+      res.status(500).json({ message: 'Failed to delete menu_rol entry' });
+    }
+  };
   
 
 
