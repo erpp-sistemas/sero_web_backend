@@ -340,6 +340,50 @@ export const getAllMenuRol = async (req, res) => {
   };
 
 
+  /**
+ * Updates a specific menu_rol entry by its ID in the database.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Promise<void>}
+ * @throws {Error} Throws an error if the update fails.
+ */
+export const updateMenuRol = async (req, res) => {
+    const menuRolId = req.params.id;
+  
+    const updatedMenuRolData = req.body;
+  
+    try {
+      const place_id = 0;
+      const sequelize = getDatabaseInstance(place_id);
+  
+      // Execute query to update a specific menu_rol entry by ID
+      const [updatedMenuRol, metadata] = await sequelize.query(
+        `
+        UPDATE db_prueba.dbo.menu_rol
+        SET id_menu = :id_menu, id_rol = :id_rol, activo = :activo
+        OUTPUT inserted.*
+        WHERE id_menu_rol = :id_menu_rol;
+      `,
+        {
+          replacements: { id_menu_rol: menuRolId, ...updatedMenuRolData },
+        }
+      );
+  
+      if (updatedMenuRol && updatedMenuRol.length > 0) {
+        res.json({ message: "menu_rol entry updated successfully", updatedMenuRol });
+      } else {
+        res.status(404).json({ message: "menu_rol entry not found or not updated" });
+      }
+    } catch (error) {
+      // Log the error and send a 500 status with a JSON response
+      console.error(error);
+      res.status(500).json({ message: "Failed to update menu_rol entry" });
+    }
+  };
+  
+
+
 
   /**
  * Extracts menu_rol data from the request body.
