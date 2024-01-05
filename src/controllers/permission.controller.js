@@ -613,6 +613,64 @@ export const updateMenuRolUsuario = async (req, res) => {
 
 
 
+
+  /**
+ * Deletes a specific menu_rol_usuario entry by its ID from the database.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Promise<void>}
+ * @throws {Error} Throws an error if the deletion fails.
+ */
+export const deleteMenuRolUsuario = async (req, res) => {
+    const menuRolUsuarioId = req.params.id;
+  
+    try {
+      const place_id = 0;
+      const sequelize = getDatabaseInstance(place_id);
+  
+      // Execute query to get the menu_rol_usuario information before deleting
+      const [menuRolUsuarioToDelete, menuRolUsuarioMetadata] = await sequelize.query(
+        `
+        SELECT * FROM db_prueba.dbo.menu_rol_usuario WHERE id_menu_rol_usuario = :id;
+      `,
+        {
+          replacements: { id: menuRolUsuarioId },
+        }
+      );
+  
+      // Check if the menu_rol_usuario entry to delete was found
+      if (
+        menuRolUsuarioToDelete &&
+        menuRolUsuarioToDelete.length > 0
+      ) {
+        // Execute query to delete the specific menu_rol_usuario entry by ID
+        const [deletedMenuRolUsuario, deleteMetadata] = await sequelize.query(
+          `
+          DELETE FROM db_prueba.dbo.menu_rol_usuario WHERE id_menu_rol_usuario = :id;
+        `,
+          {
+            replacements: { id: menuRolUsuarioId },
+          }
+        );
+  
+        if (deleteMetadata > 0) {
+          // Send a success response or additional data as needed
+          res.json({ message: "menu_rol_usuario entry deleted successfully" });
+        } else {
+          res.status(404).json({ message: "menu_rol_usuario entry not found" });
+        }
+      }
+    } catch (error) {
+      // Log the error and send a 500 status with a JSON response
+      console.error(error);
+      res.status(500).json({ message: 'Failed to delete menu_rol_usuario entry' });
+    }
+  };
+  
+
+
+
   const extractMenuRolUsuarioData = (requestBody) => {
     const { id_menu, id_rol, id_usuario, activo } = requestBody;
   
