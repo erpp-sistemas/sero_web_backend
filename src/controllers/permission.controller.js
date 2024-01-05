@@ -569,6 +569,49 @@ export const getAllMenuRolUsuario = async (req, res) => {
   };
 
 
+  /**
+ * Updates a specific menu_rol_usuario entry by its ID in the database.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Promise<void>}
+ * @throws {Error} Throws an error if the update fails.
+ */
+export const updateMenuRolUsuario = async (req, res) => {
+    const menuRolUsuarioId = req.params.id;
+  
+    const updatedMenuRolUsuarioData = req.body;
+  
+    try {
+      const place_id = 0;
+      const sequelize = getDatabaseInstance(place_id);
+  
+      // Execute query to update a specific menu_rol_usuario entry by ID
+      const [updatedMenuRolUsuario, metadata] = await sequelize.query(
+        `
+        UPDATE db_prueba.dbo.menu_rol_usuario
+        SET id_menu = :id_menu, id_rol = :id_rol, id_usuario = :id_usuario, activo = :activo
+        OUTPUT inserted.*
+        WHERE id_menu_rol_usuario = :id_menu_rol_usuario;
+      `,
+        {
+          replacements: { id_menu_rol_usuario: menuRolUsuarioId, ...updatedMenuRolUsuarioData },
+        }
+      );
+  
+      if (updatedMenuRolUsuario && updatedMenuRolUsuario.length > 0) {
+        res.json({ message: "menu_rol_usuario entry updated successfully", updatedMenuRolUsuario });
+      } else {
+        res.status(404).json({ message: "menu_rol_usuario entry not found or not updated" });
+      }
+    } catch (error) {
+      // Log the error and send a 500 status with a JSON response
+      console.error(error);
+      res.status(500).json({ message: "Failed to update menu_rol_usuario entry" });
+    }
+  };
+
+
 
   const extractMenuRolUsuarioData = (requestBody) => {
     const { id_menu, id_rol, id_usuario, activo } = requestBody;
