@@ -83,6 +83,34 @@ export const createSubMenuRol = async (req, res) => {
 
 
 /**
+ * Retrieves all sub_menu_rol entries from the database.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Promise<void>}
+ * @throws {Error} Throws an error if the retrieval fails.
+ */
+export const getAllSubMenuRol = async (req, res) => {
+    try {
+      const place_id = 0;
+      const sequelize = getDatabaseInstance(place_id);
+  
+      // Execute query to get all sub_menu_rol entries
+      const [subMenuRols, metadata] = await sequelize.query(`
+        SELECT * FROM db_prueba.dbo.sub_menu_rol;
+      `);
+  
+      // Send the retrieved sub_menu_rol entries as a JSON response
+      res.json(subMenuRols);
+    } catch (error) {
+      // Log the error and send a 500 status with a JSON response
+      console.error(error);
+      res.status(500).json({ message: "Failed to retrieve sub_menu_rol entries" });
+    }
+  };
+
+
+/**
  * Deletes a specific sub_menu_rol entry by its ID from the database.
  *
  * @param {Object} req - Express request object.
