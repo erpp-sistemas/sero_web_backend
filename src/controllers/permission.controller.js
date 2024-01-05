@@ -798,6 +798,50 @@ export const getAllSubMenuRolUsuario = async (req, res) => {
   };
 
 
+  
+/**
+ * Updates a specific sub_menu_rol_usuario entry by its ID in the database.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Promise<void>}
+ * @throws {Error} Throws an error if the update fails.
+ */
+export const updateSubMenuRolUsuario = async (req, res) => {
+    const subMenuRolUsuarioId = req.params.id;
+  
+    const updatedSubMenuRolUsuarioData = req.body;
+  
+    try {
+      const place_id = 0;
+      const sequelize = getDatabaseInstance(place_id);
+  
+      // Execute query to update a specific sub_menu_rol_usuario entry by ID
+      const [updatedSubMenuRolUsuario, metadata] = await sequelize.query(
+        `
+        UPDATE db_prueba.dbo.sub_menu_rol_usuario
+        SET id_sub_menu = :id_sub_menu, id_rol = :id_rol, id_usuario = :id_usuario, activo = :activo
+        OUTPUT inserted.*
+        WHERE id_sub_menu_rol_usuario = :id_sub_menu_rol_usuario;
+      `,
+        {
+          replacements: { id_sub_menu_rol_usuario: subMenuRolUsuarioId, ...updatedSubMenuRolUsuarioData },
+        }
+      );
+  
+      if (updatedSubMenuRolUsuario && updatedSubMenuRolUsuario.length > 0) {
+        res.json({ message: "sub_menu_rol_usuario entry updated successfully", updatedSubMenuRolUsuario });
+      } else {
+        res.status(404).json({ message: "sub_menu_rol_usuario entry not found or not updated" });
+      }
+    } catch (error) {
+      // Log the error and send a 500 status with a JSON response
+      console.error(error);
+      res.status(500).json({ message: "Failed to update sub_menu_rol_usuario entry" });
+    }
+  };
+
+
 
 
   
