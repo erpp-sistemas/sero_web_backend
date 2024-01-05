@@ -83,6 +83,63 @@ export const createSubMenuRol = async (req, res) => {
 
 
 /**
+ * Deletes a specific sub_menu_rol entry by its ID from the database.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Promise<void>}
+ * @throws {Error} Throws an error if the deletion fails.
+ */
+export const deleteSubMenuRol = async (req, res) => {
+    const subMenuRolId = req.params.id;
+  
+    console.log(subMenuRolId);
+  
+    try {
+      const place_id = 0;
+      const sequelize = getDatabaseInstance(place_id);
+  
+      // Execute query to get the sub_menu_rol information before deleting
+      const [subMenuRolToDelete, subMenuRolMetadata] = await sequelize.query(
+        `
+        SELECT * FROM db_prueba.dbo.sub_menu_rol WHERE id_sub_menu_rol = :id;
+      `,
+        {
+          replacements: { id: subMenuRolId },
+        }
+      );
+  
+      // Check if the sub_menu_rol entry to delete was found
+      if (
+        subMenuRolToDelete &&
+        subMenuRolToDelete.length > 0
+      ) {
+        // Execute query to delete the specific sub_menu_rol entry by ID
+        const [deletedSubMenuRol, deleteMetadata] = await sequelize.query(
+          `
+          DELETE FROM db_prueba.dbo.sub_menu_rol WHERE id_sub_menu_rol = :id;
+        `,
+          {
+            replacements: { id: subMenuRolId },
+          }
+        );
+  
+        if (deleteMetadata > 0) {
+          // Send a success response or additional data as needed
+          res.json({ message: "sub_menu_rol entry deleted successfully" });
+        } else {
+          res.status(404).json({ message: "sub_menu_rol entry not found" });
+        }
+      }
+    } catch (error) {
+      // Log the error and send a 500 status with a JSON response
+      console.error(error);
+      res.status(500).json({ message: 'Failed to delete sub_menu_rol entry' });
+    }
+  };
+
+
+/**
  * Extracts sub_menu_rol data from the request body.
  *
  * @param {Object} requestBody - The request body containing sub_menu_rol data.
@@ -98,3 +155,5 @@ const extractSubMenuRolData = (requestBody) => {
   
     return { id_sub_menu, id_rol, activo };
   };
+
+
