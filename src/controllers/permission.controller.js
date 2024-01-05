@@ -18,6 +18,15 @@ const createMenuRolSchema = Joi.object({
     activo: Joi.boolean().required(),
   });
 
+// Define el esquema de validación para los datos del cuerpo de la solicitud de menu_rol_usuario
+const createMenuRolUsuarioSchema = Joi.object({
+    id_menu_rol_usuario: Joi.number(),
+    id_menu: Joi.number(),
+    id_rol: Joi.number(),
+    id_usuario: Joi.number(),
+    activo: Joi.boolean().required(),
+  });
+
 /**
  * Inserts sub_menu_rol data into the database.
  *
@@ -455,6 +464,91 @@ const extractMenuRolData = (requestBody) => {
     }
   
     return { id_menu, id_rol, activo };
+  };
+
+
+
+/**
+ * Inserts menu_rol_usuario data into the database.
+ *
+ * @param {Object} menuRolUsuarioData - The data to be inserted into the database.
+ * @returns {Promise<void>} - A Promise that resolves once the data is inserted.
+ * @throws {Error} - Throws an error if the insertion fails.
+ */
+const insertMenuRolUsuarioToDatabase = async (menuRolUsuarioData) => {
+    const place_id = 0;
+    const sequelize = getDatabaseInstance(place_id);
+  
+    // Execute stored procedure or perform actions to create a new menu_rol_usuario entry
+    const [menuRolUsuarioCreated] = await sequelize.query(
+      `
+      INSERT INTO db_prueba.dbo.menu_rol_usuario (id_menu, id_rol, id_usuario, activo)
+      VALUES (:id_menu, :id_rol, :id_usuario, :activo);
+      SELECT SCOPE_IDENTITY() AS insertedId;
+    `,
+      {
+        replacements: menuRolUsuarioData,
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
+  
+    console.info(menuRolUsuarioCreated);
+  
+    // Check if the menu_rol_usuario entry was created successfully
+    if (
+      !menuRolUsuarioCreated ||
+      menuRolUsuarioCreated.length === 0 ||
+      !menuRolUsuarioCreated.insertedId
+    ) {
+      // If the menu_rol_usuario creation was not successful, throw an error
+      throw new Error("Failed to create menu_rol_usuario entry");
+    }
+    return menuRolUsuarioCreated.insertedId;
+  };
+  
+  /**
+   * Creates a new menu_rol_usuario entry using the provided data.
+   *
+   * @param {Object} req - Express request object.
+   * @param {Object} res - Express response object.
+   * @returns {Promise<void>}
+   * @throws {Error} Throws an error if the menu_rol_usuario entry creation fails.
+   */
+  export const createMenuRolUsuario = async (req, res) => {
+    try {
+      // Validar los datos del cuerpo de la solicitud con el esquema
+      const { error, value } = createMenuRolUsuarioSchema.validate(req.body);
+  
+      if (error) {
+        // Si hay errores de validación, responde con un error 400 y los detalles del error
+        return res
+          .status(400)
+          .json({ message: "Invalid request body", error: error.details });
+      }
+  
+      const menuRolUsuarioData = extractMenuRolUsuarioData(value);
+  
+      await insertMenuRolUsuarioToDatabase(menuRolUsuarioData);
+  
+      // Send a success response or additional data as needed
+      res.json({ message: "menu_rol_usuario entry created successfully" });
+    } catch (error) {
+      // Log the error and send a 500 status with a JSON response
+      console.error(error);
+      res.status(500).json({ message: "Failed to create menu_rol_usuario entry" });
+    }
+  };
+
+
+
+  const extractMenuRolUsuarioData = (requestBody) => {
+    const { id_menu, id_rol, id_usuario, activo } = requestBody;
+  
+    if (!id_menu || !id_rol || !id_usuario || !activo) {
+      throw new Error("Invalid request body. Missing required properties.");
+    }
+  
+    return { id_menu, id_rol, id_usuario, activo };
   };
 
 
