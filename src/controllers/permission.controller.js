@@ -540,6 +540,35 @@ const insertMenuRolUsuarioToDatabase = async (menuRolUsuarioData) => {
   };
 
 
+  
+/**
+ * Retrieves all menu_rol_usuario entries from the database.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Promise<void>}
+ * @throws {Error} Throws an error if the retrieval fails.
+ */
+export const getAllMenuRolUsuario = async (req, res) => {
+    try {
+      const place_id = 0;
+      const sequelize = getDatabaseInstance(place_id);
+  
+      // Execute query to get all menu_rol_usuario entries
+      const [menuRolUsuarios, metadata] = await sequelize.query(`
+        SELECT id_menu_rol_usuario, id_menu, id_rol, id_usuario, activo FROM db_prueba.dbo.menu_rol_usuario;
+      `);
+  
+      // Send the retrieved menu_rol_usuario entries as a JSON response
+      res.json(menuRolUsuarios);
+    } catch (error) {
+      // Log the error and send a 500 status with a JSON response
+      console.error(error);
+      res.status(500).json({ message: "Failed to retrieve menu_rol_usuario entries" });
+    }
+  };
+
+
 
   const extractMenuRolUsuarioData = (requestBody) => {
     const { id_menu, id_rol, id_usuario, activo } = requestBody;
