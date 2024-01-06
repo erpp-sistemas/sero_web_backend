@@ -27,6 +27,7 @@ router.post('/menu_rol_usuario', permissionController.createMenuRolUsuario);
 router.get('/menu_rol_usuario', permissionController.getAllMenuRolUsuario);
 router.put('/menu_rol_usuario/:id', permissionController.updateMenuRolUsuario);
 router.delete('/menu_rol_usuario/:id', permissionController.deleteMenuRolUsuario);
+router.get("/menu-rol-usuario/by-user/:id_usuario",permissionController.getMenuRolUsuarioByUserId);
 
 // Sub_Menu_Rol_Usuario Routes
 router.post('/sub_menu_rol_usuario', permissionController.createSubMenuRolUsuario);
