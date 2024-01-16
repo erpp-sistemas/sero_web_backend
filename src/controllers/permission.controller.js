@@ -181,6 +181,38 @@ export const updateSubMenuRol = async (req, res) => {
   };
 
 
+  /**
+ * Retrieves all sub_menu_rol entries associated with a specific rol ID from the database.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Promise<void>}
+ * @throws {Error} Throws an error if the retrieval fails.
+ */
+export const getSubMenuRolByIdRol = async (req, res) => {
+  const rolId = req.params.id;
+
+  try {
+    const place_id = 0;
+    const sequelize = getDatabaseInstance(place_id);
+
+    // Execute query to get all sub_menu_rol entries associated with a specific rol ID
+    const [subMenuRols, metadata] = await sequelize.query(`
+      SELECT * FROM db_prueba.dbo.sub_menu_rol WHERE id_rol = :id_rol;
+    `, {
+      replacements: { id_rol: rolId },
+    });
+
+    // Send the retrieved sub_menu_rol entries as a JSON response
+    res.json(subMenuRols);
+  } catch (error) {
+    // Log the error and send a 500 status with a JSON response
+    console.error(error);
+    res.status(500).json({ message: "Failed to retrieve sub_menu_rol entries for the specified rol" });
+  }
+};
+
+
 /**
  * Deletes a specific sub_menu_rol entry by its ID from the database.
  *
@@ -400,6 +432,38 @@ export const updateMenuRol = async (req, res) => {
       res.status(500).json({ message: "Failed to update menu_rol entry" });
     }
   };
+
+
+  /**
+ * Retrieves all menu_rol entries associated with a specific rol ID from the database.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Promise<void>}
+ * @throws {Error} Throws an error if the retrieval fails.
+ */
+export const getMenuRolByIdRol = async (req, res) => {
+  const rolId = req.params.id;
+
+  try {
+    const place_id = 0;
+    const sequelize = getDatabaseInstance(place_id);
+
+    // Execute query to get all menu_rol entries associated with a specific rol ID
+    const [menuRols, metadata] = await sequelize.query(`
+      SELECT * FROM db_prueba.dbo.menu_rol WHERE id_rol = :id_rol;
+    `, {
+      replacements: { id_rol: rolId },
+    });
+
+    // Send the retrieved menu_rol entries as a JSON response
+    res.json(menuRols);
+  } catch (error) {
+    // Log the error and send a 500 status with a JSON response
+    console.error(error);
+    res.status(500).json({ message: "Failed to retrieve menu_rol entries for the specified rol" });
+  }
+};
 
 
   /**

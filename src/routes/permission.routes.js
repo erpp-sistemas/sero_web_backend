@@ -15,12 +15,14 @@ router.post('/sub_menu_rol', permissionController.createSubMenuRol);
 router.get('/sub_menu_rol', permissionController.getAllSubMenuRol);
 router.put('/sub_menu_rol/:id', permissionController.updateSubMenuRol);
 router.delete('/sub_menu_rol/:id', permissionController.deleteSubMenuRol);
+router.get('/sub_menu_rol/rol/:id', permissionController.getSubMenuRolByIdRol);
 
 // Menu_Rol Routes
 router.post('/menu_rol', permissionController.createMenuRol);
 router.get('/menu_rol', permissionController.getAllMenuRol);
 router.put('/menu_rol/:id', permissionController.updateMenuRol);
 router.delete('/menu_rol/:id', permissionController.deleteMenuRol);
+router.get('/menu_rol/rol/:id', permissionController.getMenuRolByIdRol);
 
 // Menu_Rol_Usuario Routes
 router.post('/menu_rol_usuario', permissionController.createMenuRolUsuario);
