@@ -173,6 +173,7 @@ export const updateStatePhoto = async (req, res) => {
 export const duplicatePhoto = async (req, res) => {
   
   const dataToUpdate = req.body;
+  console.log(dataToUpdate);
  
   const { imageId, account, type, user_id, date_capture, session_user_id } =
     dataToUpdate;
