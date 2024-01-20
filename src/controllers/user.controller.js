@@ -1,7 +1,7 @@
 // Import necessary modules and controllers
 import { getDatabaseInstance } from "../config/dbManager.config.js";
 import Joi from "joi";
-
+import bcrypt from "bcryptjs";
 // Define the validation schema for the request body data
 const createUserSchema = Joi.object({
   username: Joi.string().required(),
@@ -16,31 +16,34 @@ const createUserSchema = Joi.object({
  * @returns {Promise<void>} - A Promise that resolves once the data is inserted.
  * @throws {Error} - Throws an error if the insertion fails.
  */
+
 const insertUserToDatabase = async (userData) => {
   const place_id = 0;
   const sequelize = getDatabaseInstance(place_id);
 
-  // Execute stored procedure or perform actions to create a new user
-  const [userCreated] = await sequelize.query(
-    `
-    INSERT INTO dbo.[user] (username, email, password)
-    VALUES (:username, :email, :password);
-    SELECT SCOPE_IDENTITY() AS insertedId;
-  `,
-    {
-      replacements: userData,
-      type: sequelize.QueryTypes.SELECT,
+  try {
+    const hashedPassword = await bcrypt.hash(userData.password, 12);
+
+    const [userCreated,metadata] = await sequelize.query(
+      `
+      INSERT INTO dbo.[user] (username, email, password)
+      VALUES (:username, :email, :password);
+    `,
+      {
+        replacements: { ...userData, password: hashedPassword },
+      }
+    );
+
+    if (metadata) {
+      // If at least one row was affected, assume successful insertion
+      return { message: "User created successfully" };
+    } else {
+      throw new Error("Failed to create user");
     }
-  );
-
-  console.info(userCreated);
-
-  // Check if the user was created successfully
-  if (!userCreated || userCreated.length === 0 || !userCreated.insertedId) {
-    // If the user creation was not successful, throw an error
-    throw new Error("Failed to create user");
+  } catch (error) {
+    console.error("Error during user creation:", error);
+    throw error;
   }
-  return userCreated.insertedId;
 };
 
 /**
