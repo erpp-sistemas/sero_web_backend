@@ -401,7 +401,7 @@ export const getAllMenuRol = async (req, res) => {
  */
 export const updateMenuRol = async (req, res) => {
     const menuRolId = req.params.id;
-  
+    console.log(req.body);
     const updatedMenuRolData = req.body;
   
     try {

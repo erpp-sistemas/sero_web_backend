@@ -15,7 +15,7 @@ import paymentRoutes from './routes/payment.routes.js'
 import rolRoutes from './routes/rol.routes.js'
 import submenuRoutes from './routes/submenu.routes.js'
 import permissionRoutes from './routes/permission.routes.js'
-
+import userRoutes from './routes/user.routes.js'
 const app = express()
 
 //Estas lineas se usan cuando se esta trabajando el proyecto a modo local 
@@ -45,5 +45,7 @@ app.use('/api', paymentRoutes)
 app.use('/api', rolRoutes)
 app.use('/api',submenuRoutes)
 app.use('/api',permissionRoutes)
+app.use('/api',userRoutes)
+
 
 export default app
