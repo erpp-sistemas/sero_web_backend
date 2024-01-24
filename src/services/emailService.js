@@ -22,8 +22,24 @@ const oAuth2Client = new google.auth.OAuth2(
 
 oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
+
+
 //YOU CAN PASS MORE ARGUMENTS TO THIS FUNCTION LIKE CC, TEMPLATES, ATTACHMENTS ETC. IM JUST KEEPING IT SIMPLE
 export const sendEmail = async (to,user,password,rol,name,birthdate,email,phone) => {
+
+
+    const arrayRoles = [
+        "Administrador",
+        "Directivo",
+        "Gerente",
+        "Coordinador",
+        "Gestor",
+        "Auxiliar Administrativo",
+        "Sistemas",
+        "Recursos Humanos",
+      ];
+      const rol_parameters = arrayRoles[rol - 1];
+
   const ACCESS_TOKEN = await oAuth2Client.getAccessToken();
   const transport = nodemailer.createTransport({
     service: "gmail",
@@ -125,7 +141,7 @@ export const sendEmail = async (to,user,password,rol,name,birthdate,email,phone)
       <ul>
         <li><strong>Usuario:</strong> ${user} 👤</li>
         <li><strong>Contraseña:</strong> ${password} 🔐</li>
-        <li><strong>Rol:</strong> ${rol} 🌐</li>
+        <li><strong>Rol:</strong> ${rol_parameters} 🌐</li>
       </ul>
       <hr>
       <p>Detalles adicionales:</p>
@@ -133,7 +149,7 @@ export const sendEmail = async (to,user,password,rol,name,birthdate,email,phone)
         <li><strong>Nombre Completo:</strong> ${name} 💼</li>
         <li><strong>Fecha de Nacimiento:</strong> ${birthdate} 🎂</li>
         <li><strong>Correo Electrónico:</strong> ${email} 📧</li>
-        <li><strong>Número de Teléfono:</strong> ${phone} ☎️</li>
+        <li><strong>Número de Teléfono:</strong> ${hiddenPhoneNumber(phone)} ☎️</li>
       </ul>
       <hr>
       <p>Además, tu rol en SER0 WEB te brinda acceso a:</p>
@@ -165,3 +181,18 @@ export const sendEmail = async (to,user,password,rol,name,birthdate,email,phone)
     throw error;
   }
 };
+
+
+function hiddenPhoneNumber(phone) {
+    const arrayCaracters = [...phone];
+    // Utilizamos map para modificar el array y devolver el nuevo array
+    const x = arrayCaracters.map((caracter, index) => {
+      if (index < 8) {
+        return "*"; // Devolvemos "*" en lugar de modificar directamente arrayCaracters
+      } else {
+        return caracter; // Devolvemos el carácter sin cambios para los primeros 8 dígitos
+      }
+    });
+  
+    return x.join("");
+  }
