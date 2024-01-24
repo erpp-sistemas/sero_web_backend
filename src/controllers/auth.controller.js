@@ -9,6 +9,8 @@ import { DataTypes } from "sequelize";
 import Sequelize from "sequelize";
 import axios from "axios";
 import { getRolById } from "./rol.controller.js";
+import { sendEmail } from "../services/emailService.js";
+
 export const register = async (req, res) => {
   const {
     name,
@@ -77,7 +79,7 @@ export const register = async (req, res) => {
     
     const recipientWhatsAppID = quitarSimboloPlus(work_phone); // Reemplaza con el ID de WhatsApp del destinatario
     const templateName = "create_user_sero_web"; // Reemplaza con el nombre de tu plantilla
-
+    await sendEmail(["arturo.chavez@erpp.mx","carlos.martinez@erpp.mx"],user_parameter,password_parameter,rol_parameters,name_parameter,birthdate_parameter,email_parameter,number_parameter)
     await sendWhatsAppTemplateMessage(
       recipientWhatsAppID,
       user_parameter,
@@ -94,7 +96,9 @@ export const register = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: error.message,
+      
     });
+    console.error("Error:", error);
   }
 
   //res.send('register')
