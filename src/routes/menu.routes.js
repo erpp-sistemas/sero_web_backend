@@ -21,5 +21,10 @@ router.post('/menus', menuController.createMenu);
 router.get('/menus', menuController.getAllMenus);
 router.put('/menus/:id', menuController.updateMenu);
 router.delete('/menus/:id', menuController.deleteMenu);
+router.get('/menuByUserAndRol/:user_id/:rol_id', menuController.getMenuByUserAndRol);
+router.post('/menusByRolAndUsuario', menuController.createMenuByRolAndUsuario);
+
+//
+
 
 export default router

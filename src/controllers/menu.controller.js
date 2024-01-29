@@ -1,5 +1,8 @@
 import { getDatabaseInstance } from "../config/dbManager.config.js";
 import Joi from 'joi';
+
+
+
 export const getMenusUserId = async (req, res) => {
   const place_id = 0 
   const sequelize = getDatabaseInstance(place_id)
@@ -251,5 +254,117 @@ export const deleteMenu = async (req, res) => {
     // Registra el error y envía un estado 500 con una respuesta JSON
     console.error(error);
     res.status(500).json({ message: "Error al eliminar el menú" });
+  }
+};
+
+
+/* usuario,rol,menu */
+
+const createMenuRolUsuarioSchema = Joi.object({
+  id_menu: Joi.number(),
+  id_rol: Joi.number(),
+  id_usuario: Joi.number(),
+  activo: Joi.boolean(),
+});
+
+export const createMenuByRolAndUsuario = async (req, res) => {
+  try {
+  
+    const { error: menuError, value: menuValue } = createMenuRolUsuarioSchema.validate(req.body);
+
+    /* if (menuError) {
+      return res.status(400).json({ message: "Cuerpo de solicitud no válido para Menú", error: menuError.details });
+    } */
+
+    const menuData = extractMenuByRolAndUsuario(menuValue);
+
+   
+
+    const { error: rolUsuarioError, value: rolUsuarioValue } = createMenuRolUsuarioSchema.validate({
+      ...menuValue,
+      id_menu: menuData.id_menu,
+    });
+    console.log("***");
+    console.log(rolUsuarioValue);
+    console.log("***");
+
+  /*   if (rolUsuarioError) {
+      return res.status(400).json({ message: "Cuerpo de solicitud no válido para MenuRolUsuario", error: rolUsuarioError.details });
+    } */
+
+    await insertMenuRolUsuarioToDatabase(rolUsuarioValue);
+
+    res.json({ message: " Menú-Rol-Usuario creados exitosamente" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error al crear  Menú-Rol-Usuario" });
+  }
+};
+
+export const insertMenuRolUsuarioToDatabase = async (menuRolUsuarioData) => {
+  const place_id = 0;
+  const sequelize = getDatabaseInstance(place_id);
+
+  const [menuRolUsuarioCreated, metadata] = await sequelize.query(`
+      INSERT INTO db_prueba.dbo.menu_rol_usuario (
+        id_menu,
+        id_rol,
+        id_usuario,
+        activo
+      )
+      VALUES (
+        :id_menu,
+        :id_rol,
+        :id_usuario,
+        :activo
+      );
+    `,
+    {
+      replacements: menuRolUsuarioData,
+    }
+  );
+};
+
+export const extractMenuByRolAndUsuario = (requestBody) => {
+  const { id_menu, id_rol, id_usuario, activo } = requestBody;
+
+  if (id_menu === undefined || id_rol === undefined || id_usuario === undefined || activo === undefined) {
+    throw new Error("Cuerpo de solicitud no válido. Faltan propiedades requeridas.");
+  }
+
+  return {
+    id_menu,
+    id_rol,
+    id_usuario,
+    activo,
+  };
+};
+export const getMenuByUserAndRol = async (req, res) => {
+  const place_id = 0;
+  const sequelize = getDatabaseInstance(place_id);
+
+  try {
+    const user_id = req.params.user_id;
+    const rol_id = req.params.rol_id;
+
+    const [menuFound, metadata] = await sequelize.query(
+      `execute sp_get_menu_sub_menu_profile_user_register @user_id = :user_id, @id_rol = :rol_id`,
+      {
+        replacements: { user_id, rol_id },
+      }
+    );
+
+    console.log(menuFound);
+
+    if (!menuFound[0]) {
+      return res.status(400).json({
+        message: "not found menu",
+      });
+    }
+
+    res.json(menuFound);
+  } catch (error) {
+    console.log(error);
+    return res.status(404).json({ message: 'menu not found' });
   }
 };

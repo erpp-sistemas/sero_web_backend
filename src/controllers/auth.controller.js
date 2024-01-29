@@ -138,7 +138,9 @@ export const register = async (req, res) => {
       );
     }
 
-    return res.status(200).json(["user_id " + message[0].user_id]);
+   /*  return res.status(200).json(["user_id " + message[0].user_id]); */
+   console.log(message);
+     return res.status(200).json({id_usuario:message[0].user_id,id_rol:rol_parameters})
   } catch (error) {
     res.status(500).json({
       message: error.message,
