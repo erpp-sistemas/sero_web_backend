@@ -25,7 +25,7 @@ export const sendWhatsAppTemplateMessage = async (
       const rol = arrayRoles[rol_parameters - 1];
       const apiUrl = "https://graph.facebook.com/v18.0/120123567854245/messages";
       const accessToken =
-        "EAAMURZC9yzb8BO08OwTXvrKi7lGQkHZCn98GVWzYQdrFCDGMZAXvipmZAIAuoLS8IWRbChl8dmf1kkrZB3kFZA88uP07vwZByBmkXjRFZAscDkKb4y1C6epy1UjRiO8kMEdP0Teq5xu5GlHVMl9Qr4bNIdZBGDfJ1cbFFoacVLwULPJZBAa1mtFZAB1SNiB3cp1dWuOBHshRgvZBfzltw04FdLMZD"; // Reemplaza con tu token de acceso
+        "EAAMURZC9yzb8BOwX8yRt2i3RYgh2dqYfUNloE0ZBlfk7cm36C2eXQF8ZBGTCihy43SzznGKfj6oi9axPJaZC1FWNrrc6jCgCRreeTSO729Ss0VXLyTwpy7ZC41b18IHiw1L5gsoUJx7zqkBdoRZAkpxVkLG9fU7yvXUXrFnndSVrGy7bWOYutfTCU9q7VHBtSp9rePugp06d1nyCszuvAU"; // Reemplaza con tu token de acceso
   
       const requestBody = {
         messaging_product: "whatsapp",

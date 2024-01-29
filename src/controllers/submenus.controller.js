@@ -1,6 +1,5 @@
 import { getDatabaseInstance } from "../config/dbManager.config.js";
-import Joi from 'joi';
-
+import Joi from "joi";
 
 /**
  * Schema for validating the request body when creating a new sub-menu.
@@ -9,12 +8,12 @@ import Joi from 'joi';
  */
 const createSubMenuSchema = Joi.object({
   nombre: Joi.string().required().trim(),
-  descripcion: Joi.string().allow('').trim(),
-  url: Joi.string().allow('').trim(),
-  icono: Joi.string().allow('').trim(),
+  descripcion: Joi.string().allow("").trim(),
+  url: Joi.string().allow("").trim(),
+  icono: Joi.string().allow("").trim(),
   activo: Joi.boolean().required(),
-  icon_mui: Joi.string().allow('').trim(),
-  route: Joi.string().allow('').trim(),
+  icon_mui: Joi.string().allow("").trim(),
+  route: Joi.string().allow("").trim(),
   id_menu_padre: Joi.number().required(),
 });
 
@@ -27,27 +26,32 @@ const createSubMenuSchema = Joi.object({
  * @throws {Error} Lanza un error si falla la creación del submenú.
  */
 export const createSubMenu = async (req, res) => {
-    try {
-      // Valida los datos del cuerpo de la solicitud con el esquema
-      const { error, value } = createSubMenuSchema.validate(req.body);
-  
-      if (error) {
-        // Si hay errores de validación, responde con un error 400 y los detalles del error
-        return res.status(400).json({ message: "Cuerpo de solicitud no válido", error: error.details });
-      }
-  
-      const subMenuData = extractSubMenuData(value);
-  
-      await insertSubMenuToDatabase(subMenuData);
-  
-      // Envía una respuesta exitosa o datos adicionales según sea necesario
-      res.json({ message: "Submenú creado exitosamente" });
-    } catch (error) {
-      // Registra el error y envía un estado 500 con una respuesta JSON
-      console.error(error);
-      res.status(500).json({ message: "Error al crear el submenú" });
+  try {
+    // Valida los datos del cuerpo de la solicitud con el esquema
+    const { error, value } = createSubMenuSchema.validate(req.body);
+
+    if (error) {
+      // Si hay errores de validación, responde con un error 400 y los detalles del error
+      return res
+        .status(400)
+        .json({
+          message: "Cuerpo de solicitud no válido",
+          error: error.details,
+        });
     }
-  };
+
+    const subMenuData = extractSubMenuData(value);
+
+    await insertSubMenuToDatabase(subMenuData);
+
+    // Envía una respuesta exitosa o datos adicionales según sea necesario
+    res.json({ message: "Submenú creado exitosamente" });
+  } catch (error) {
+    // Registra el error y envía un estado 500 con una respuesta JSON
+    console.error(error);
+    res.status(500).json({ message: "Error al crear el submenú" });
+  }
+};
 /**
  * Inserta datos de submenú en la base de datos.
  *
@@ -56,11 +60,12 @@ export const createSubMenu = async (req, res) => {
  * @throws {Error} - Lanza un error si la inserción falla.
  */
 export const insertSubMenuToDatabase = async (subMenuData) => {
-    const place_id = 0;
-    const sequelize = getDatabaseInstance(place_id);
-  
-    // Ejecuta la consulta para insertar un nuevo submenú
-    const [subMenuCreated, metadata] = await sequelize.query(`
+  const place_id = 0;
+  const sequelize = getDatabaseInstance(place_id);
+
+  // Ejecuta la consulta para insertar un nuevo submenú
+  const [subMenuCreated, metadata] = await sequelize.query(
+    `
         INSERT INTO db_prueba.dbo.sub_menu (
           nombre,
           descripcion,
@@ -82,12 +87,11 @@ export const insertSubMenuToDatabase = async (subMenuData) => {
           :id_menu_padre
         );
       `,
-      {
-        replacements: subMenuData,
-      }
-    );
-  };
-  
+    {
+      replacements: subMenuData,
+    }
+  );
+};
 
 // Resto del código de actualización y eliminación de submenús (updateSubMenu y deleteSubMenu)...
 
@@ -99,26 +103,36 @@ export const insertSubMenuToDatabase = async (subMenuData) => {
  * @throws {Error} - Lanza un error si la extracción falla o si faltan propiedades requeridas.
  */
 export const extractSubMenuData = (requestBody) => {
-    const { nombre, descripcion, url, icono, activo, icon_mui, route, id_menu_padre } = requestBody;
-  
-    if (!nombre || activo === undefined || !id_menu_padre) {
-      throw new Error("Cuerpo de solicitud no válido. Faltan propiedades requeridas.");
-    }
-  
-    return {
-      nombre,
-      descripcion,
-      url,
-      icono,
-      activo,
-      icon_mui,
-      route,
-      id_menu_padre,
-    };
+  const {
+    nombre,
+    descripcion,
+    url,
+    icono,
+    activo,
+    icon_mui,
+    route,
+    id_menu_padre,
+  } = requestBody;
+
+  if (!nombre || activo === undefined || !id_menu_padre) {
+    throw new Error(
+      "Cuerpo de solicitud no válido. Faltan propiedades requeridas."
+    );
+  }
+
+  return {
+    nombre,
+    descripcion,
+    url,
+    icono,
+    activo,
+    icon_mui,
+    route,
+    id_menu_padre,
   };
+};
 
-
-  /**
+/**
  * Obtiene todos los submenús de la base de datos.
  *
  * @param {Object} req - Objeto de solicitud Express.
@@ -127,27 +141,26 @@ export const extractSubMenuData = (requestBody) => {
  * @throws {Error} Lanza un error si falla la recuperación.
  */
 export const getAllSubMenus = async (req, res) => {
-    try {
-      const place_id = 0;
-      const sequelize = getDatabaseInstance(place_id);
-  
-      // Ejecuta la consulta para obtener todos los submenús
-      const [subMenus, metadata] = await sequelize.query(`
+  try {
+    const place_id = 0;
+    const sequelize = getDatabaseInstance(place_id);
+
+    // Ejecuta la consulta para obtener todos los submenús
+    const [subMenus, metadata] = await sequelize.query(`
           SELECT id_sub_menu, id_menu_padre, nombre, descripcion, url, icono, activo, icon_mui, route
           FROM dbo.sub_menu;
         `);
-  
-      // Envía los submenús recuperados como una respuesta JSON
-      res.json(subMenus);
-    } catch (error) {
-      // Registra el error y envía un estado 500 con una respuesta JSON
-      console.error(error);
-      res.status(500).json({ message: "Error al recuperar los submenús" });
-    }
-  };
 
+    // Envía los submenús recuperados como una respuesta JSON
+    res.json(subMenus);
+  } catch (error) {
+    // Registra el error y envía un estado 500 con una respuesta JSON
+    console.error(error);
+    res.status(500).json({ message: "Error al recuperar los submenús" });
+  }
+};
 
-  /**
+/**
  * Actualiza un submenú específico por su ID en la base de datos.
  *
  * @param {Object} req - Objeto de solicitud Express.
@@ -156,16 +169,17 @@ export const getAllSubMenus = async (req, res) => {
  * @throws {Error} Lanza un error si falla la actualización.
  */
 export const updateSubMenu = async (req, res) => {
-    const subMenuId = req.params.id;
-    const updatedSubMenuData = extractSubMenuData(req.body);
-  
-    try {
-      const place_id = 0;
-      const sequelize = getDatabaseInstance(place_id);
+  const subMenuId = req.params.id;
+  const updatedSubMenuData = extractSubMenuData(req.body);
 
-   ///ff
-      // Ejecuta la consulta para actualizar un submenú específico por su ID
-      const [updatedSubMenu, metadata] = await sequelize.query(`
+  try {
+    const place_id = 0;
+    const sequelize = getDatabaseInstance(place_id);
+
+    ///ff
+    // Ejecuta la consulta para actualizar un submenú específico por su ID
+    const [updatedSubMenu, metadata] = await sequelize.query(
+      `
           UPDATE db_prueba.dbo.sub_menu
           SET
             nombre = :nombre,
@@ -178,21 +192,19 @@ export const updateSubMenu = async (req, res) => {
             id_menu_padre = :id_menu_padre
           WHERE id_sub_menu = :id;
         `,
-        {
-          replacements: { id: subMenuId, ...updatedSubMenuData },
-        }
-      );
-  
-      res.json({ message: "Submenú actualizado exitosamente" });
-    } catch (error) {
-      // Registra el error y envía un estado 500 con una respuesta JSON
-      console.error(error);
-      res.status(500).json({ message: "Error al actualizar el submenú" });
-    }
-  };
+      {
+        replacements: { id: subMenuId, ...updatedSubMenuData },
+      }
+    );
 
+    res.json({ message: "Submenú actualizado exitosamente" });
+  } catch (error) {
+    // Registra el error y envía un estado 500 con una respuesta JSON
+    console.error(error);
+    res.status(500).json({ message: "Error al actualizar el submenú" });
+  }
+};
 
-  
 /**
  * Elimina un submenú específico por su ID de la base de datos.
  *
@@ -202,33 +214,127 @@ export const updateSubMenu = async (req, res) => {
  * @throws {Error} Lanza un error si falla la eliminación.
  */
 export const deleteSubMenu = async (req, res) => {
-    const subMenuId = req.params.id;
-  
-    try {
-      const place_id = 0;
-      const sequelize = getDatabaseInstance(place_id);
-  
-      // Ejecuta la consulta para eliminar un submenú específico por su ID
-      const [deletedSubMenu, metadata] = await sequelize.query(`
+  const subMenuId = req.params.id;
+
+  try {
+    const place_id = 0;
+    const sequelize = getDatabaseInstance(place_id);
+
+    // Ejecuta la consulta para eliminar un submenú específico por su ID
+    const [deletedSubMenu, metadata] = await sequelize.query(
+      `
           DELETE FROM db_prueba.dbo.sub_menu WHERE id_sub_menu = :id;
         `,
-        {
-          replacements: { id: subMenuId },
-        }
-      );
-  
-      // Verifica si el submenú se eliminó correctamente
-      if (metadata > 0) {
-        // Envía una respuesta de éxito o datos adicionales según sea necesario
-        res.json({ message: "Submenú eliminado exitosamente" });
-      } else {
-        res.status(404).json({ message: "Submenú no encontrado" });
+      {
+        replacements: { id: subMenuId },
       }
-    } catch (error) {
-      // Registra el error y envía un estado 500 con una respuesta JSON
-      console.error(error);
-      res.status(500).json({ message: "Error al eliminar el submenú" });
-    }
-  };
+    );
 
- 
+    // Verifica si el submenú se eliminó correctamente
+    if (metadata > 0) {
+      // Envía una respuesta de éxito o datos adicionales según sea necesario
+      res.json({ message: "Submenú eliminado exitosamente" });
+    } else {
+      res.status(404).json({ message: "Submenú no encontrado" });
+    }
+  } catch (error) {
+    // Registra el error y envía un estado 500 con una respuesta JSON
+    console.error(error);
+    res.status(500).json({ message: "Error al eliminar el submenú" });
+  }
+};
+
+const createSubMenuRolUsuarioSchema = Joi.object({
+  id_sub_menu: Joi.number().required(),
+  id_rol: Joi.number().required(),
+  id_usuario: Joi.number().required(),
+  activo: Joi.boolean().required(),
+});
+
+export const createSubMenuByRolAndUsuario = async (req, res) => {
+  try {
+
+    console.log(req.body);
+    const { error: subMenuError, value: subMenuValue } =
+      createSubMenuRolUsuarioSchema.validate(req.body);
+
+    if (subMenuError) {
+      return res
+        .status(400)
+        .json({
+          message: "Cuerpo de solicitud no válido para Submenú",
+          error: subMenuError.details,
+        });
+    }
+
+    const subMenuData = extractSubMenuSubMenuByRolAndUsuario(subMenuValue);
+
+    const { error: subMenuRolUsuarioError, value: subMenuRolUsuarioValue } =
+      createSubMenuRolUsuarioSchema.validate({
+        ...subMenuValue,
+        id_sub_menu: subMenuData.id_sub_menu,
+      });
+
+    if (subMenuRolUsuarioError) {
+      return res
+        .status(400)
+        .json({
+          message: "Cuerpo de solicitud no válido para Submenú-Rol-Usuario",
+          error: subMenuRolUsuarioError.details,
+        });
+    }
+
+    await insertSubMenuRolUsuarioToDatabase(subMenuRolUsuarioValue);
+
+    res.json({ message: "Submenú-Rol-Usuario creados exitosamente" });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error al crear Submenú-Rol-Usuario" });
+  }
+};
+
+export const insertSubMenuRolUsuarioToDatabase = async (
+  subMenuRolUsuarioData
+) => {
+  const place_id = 0;
+  const sequelize = getDatabaseInstance(place_id);
+
+  const [subMenuRolUsuarioCreated, metadata] = await sequelize.query(
+    `
+        INSERT INTO db_prueba.dbo.sub_menu_rol_usuario (
+          id_sub_menu,
+          id_rol,
+          id_usuario,
+          activo
+        )
+        VALUES (
+          :id_sub_menu,
+          :id_rol,
+          :id_usuario,
+          :activo
+        );
+      `,
+    {
+      replacements: subMenuRolUsuarioData,
+    }
+  );
+};
+
+export const extractSubMenuSubMenuByRolAndUsuario = (requestBody) => {
+  const { id_sub_menu, id_rol, id_usuario, activo } = requestBody;
+
+  /* if (!id_sub_menu || activo === undefined) {
+    throw new Error(
+      "Cuerpo de solicitud no válido. Faltan propiedades requeridas."
+    );
+  } */
+
+  return {
+    id_sub_menu,
+    id_rol,
+    id_usuario,
+    activo,
+  };
+};
