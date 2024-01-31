@@ -213,3 +213,35 @@ export const updateUser = async (req, res) => {
     res.status(500).json({ message: "Failed to update user" });
   }
 };
+
+
+
+
+
+export const getUserById = async (req, res) => {
+
+  const place_id = 0;
+  const userID =Number(req.params?.id)
+  console.log("***************************");
+  console.log(userID);
+  console.log("***************************");
+
+  const sequelize = getDatabaseInstance(place_id);
+
+  try {
+    const [data, metadata] = await sequelize.query(`execute sp_get_users '${userID}'`)
+    // Verifica si accountHistory es undefined o tiene algún valor
+    if(!data[0]) return res.status(400).json({
+      message: "not found user"
+    })      
+  
+    res.json(data)
+
+  } catch (error) {
+    console.log(error)
+    return res.status(404).json({message: 'user not found'})
+  }  
+};
+
+
+

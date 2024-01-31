@@ -31,6 +31,7 @@ router.put('/usuarios/:id', usuarioController.updateUser);
 
 // Route to delete a user by ID
 router.delete('/usuarios/:id', usuarioController.deleteUser);
+router.get('/GetUserById/:id',userController.getUserById)
 
 
 
