@@ -16,6 +16,7 @@ import rolRoutes from './routes/rol.routes.js'
 import submenuRoutes from './routes/submenu.routes.js'
 import permissionRoutes from './routes/permission.routes.js'
 import userRoutes from './routes/user.routes.js'
+import accessRoutes from './routes/access.route.js'
 const app = express()
 
 //Estas lineas se usan cuando se esta trabajando el proyecto a modo local 
@@ -46,6 +47,7 @@ app.use('/api', rolRoutes)
 app.use('/api',submenuRoutes)
 app.use('/api',permissionRoutes)
 app.use('/api',userRoutes)
+app.use('/api',accessRoutes)
 
 
 export default app

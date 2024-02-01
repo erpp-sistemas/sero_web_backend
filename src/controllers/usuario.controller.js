@@ -64,7 +64,9 @@ export const createUser = async (req, res) => {
     const { error, value } = userSchema.validate(req.body);
 
     if (error) {
-      return res.status(400).json({ message: "Invalid request body", error: error.details });
+      return res
+        .status(400)
+        .json({ message: "Invalid request body", error: error.details });
     }
 
     const userData = value;
@@ -112,7 +114,7 @@ export const deleteUser = async (req, res) => {
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Failed to delete user' });
+    res.status(500).json({ message: "Failed to delete user" });
   }
 };
 
@@ -153,8 +155,11 @@ export const getAllUsers = async (req, res) => {
  */
 export const updateUser = async (req, res) => {
   const userId = req.params.id;
-
-  const updatedUserData = req.body;
+  console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+  console.log(req.body);
+  console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+  const { nombre, url_image, activo, apellido_paterno, apellido_materno,fecha_nacimiento,id_sexo,telefono_empresa,telefono_personal,app_version } =
+    req.body;
 
   try {
     const place_id = 0;
@@ -164,12 +169,24 @@ export const updateUser = async (req, res) => {
     const [updatedUser, metadata] = await sequelize.query(
       `
       UPDATE db_prueba.dbo.usuario
-      SET nombre = :nombre, apellido_paterno = :apellido_paterno, apellido_materno = :apellido_materno, fecha_nacimiento = :fecha_nacimiento, id_sexo = :id_sexo, foto = :foto, qr = :qr, activo = :activo, fecha_ingreso = :fecha_ingreso, fecha_baja = :fecha_baja, telefono_personal = :telefono_personal, telefono_empresa = :telefono_empresa, id_user_push = :id_user_push, app_version = :app_version
+      SET nombre = :nombre,apellido_paterno = :apellido_paterno,apellido_materno = :apellido_materno, url_image = :url_image, activo = :activo,fecha_nacimiento = :fecha_nacimiento,id_sexo = :id_sexo,telefono_personal = :telefono_personal,telefono_empresa = :telefono_empresa,app_version = :app_version
       OUTPUT inserted.*
       WHERE id_usuario = :id_usuario;
     `,
       {
-        replacements: { id_usuario: userId, ...updatedUserData },
+        replacements: {
+          id_usuario: userId,
+          apellido_paterno,
+          apellido_materno,
+          nombre,
+          url_image,
+          activo,
+          fecha_nacimiento,
+          id_sexo,
+          telefono_personal,
+          telefono_empresa,
+          app_version,
+        },
       }
     );
 

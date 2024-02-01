@@ -100,6 +100,6 @@ export const sendWhatsAppTemplateMessage = async (
         return caracter; // Devolvemos el carácter sin cambios para los primeros 8 dígitos
       }
     });
-  
+    
     return x.join("");
   }
