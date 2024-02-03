@@ -24,7 +24,7 @@ const insertUserToDatabase = async (userData) => {
   try {
     const hashedPassword = await bcrypt.hash(userData.password, 12);
 
-    const [userCreated,metadata] = await sequelize.query(
+    const [userCreated, metadata] = await sequelize.query(
       `
       INSERT INTO dbo.[user] (username, email, password)
       VALUES (:username, :email, :password);
@@ -91,27 +91,32 @@ export const deleteUser = async (req, res) => {
   const userId = req.params.id;
 
   console.log(userId);
-  
+
   try {
     const place_id = 0;
     const sequelize = getDatabaseInstance(place_id);
 
     // Execute query to get the user information before deleting
-    const [userToDelete, userMetadata] = await sequelize.query(`
+    const [userToDelete, userMetadata] = await sequelize.query(
+      `
       SELECT * FROM dbo.[user] WHERE id = :id;
-    `, {
-      replacements: { id: userId },
-    });
+    `,
+      {
+        replacements: { id: userId },
+      }
+    );
 
     // Check if the user to delete was found
     if (userToDelete && userToDelete.length > 0) {
       // Execute query to delete the specific user by ID
-      const [deletedUser, deleteMetadata] = await sequelize.query(`
+      const [deletedUser, deleteMetadata] = await sequelize.query(
+        `
         DELETE FROM dbo.[user] WHERE id = :id;
-      `, {
-        replacements: { id: userId },
-      });
-  
+      `,
+        {
+          replacements: { id: userId },
+        }
+      );
 
       if (deleteMetadata > 0) {
         // Send a success response or additional data as needed
@@ -123,7 +128,7 @@ export const deleteUser = async (req, res) => {
   } catch (error) {
     // Log the error and send a 500 status with a JSON response
     console.error(error);
-    res.status(500).json({ message: 'Failed to delete user' });
+    res.status(500).json({ message: "Failed to delete user" });
   }
 };
 
@@ -214,34 +219,49 @@ export const updateUser = async (req, res) => {
   }
 };
 
-
-
-
-
 export const getUserById = async (req, res) => {
-
   const place_id = 0;
-  const userID =Number(req.params?.id)
-  console.log("***************************");
-  console.log(userID);
-  console.log("***************************");
+  const userID = Number(req.params?.id);
 
   const sequelize = getDatabaseInstance(place_id);
 
   try {
-    const [data, metadata] = await sequelize.query(`execute sp_get_users '${userID}'`)
+    const [data, metadata] = await sequelize.query(
+      `execute sp_get_users '${userID}'`
+    );
     // Verifica si accountHistory es undefined o tiene algún valor
-    if(!data[0]) return res.status(400).json({
-      message: "not found user"
-    })      
-  
-    res.json(data)
+    if (!data[0])
+      return res.status(400).json({
+        message: "not found user",
+      });
 
+    res.json(data);
   } catch (error) {
-    console.log(error)
-    return res.status(404).json({message: 'user not found'})
-  }  
+    console.log(error);
+    return res.status(404).json({ message: "user not found" });
+  }
 };
 
+export const getPlaceAndServiceAndProcessByUser = async (req, res) => {
+  const place_id = 0;
+  const userID = req.params?.id;
 
+  const sequelize = getDatabaseInstance(place_id);
+
+  try {
+    const [userData, metadata] =
+      await sequelize.query(`SELECT id_usuario_plaza, id_usuario, id_plaza, id_servicio, id_proceso
+    FROM db_prueba.dbo.usuario_plaza_servicio_proceso where id_usuario=${userID};`);
+    // Verifica si userData es undefined o tiene algún valor
+    if (!userData[0])
+      return res.status(400).json({
+        message: "not found user",
+      });
+
+    res.json(userData);
+  } catch (error) {
+    console.log(error);
+    return res.status(404).json({ message: "user not found" });
+  }
+};
 
