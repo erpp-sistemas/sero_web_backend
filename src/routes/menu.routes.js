@@ -23,7 +23,7 @@ router.put('/menus/:id', menuController.updateMenu);
 router.delete('/menus/:id', menuController.deleteMenu);
 router.get('/menuByUserAndRol/:user_id/:rol_id', menuController.getMenuByUserAndRol);
 router.post('/menusByRolAndUsuario', menuController.createMenuByRolAndUsuario);
-
+router.put('/updateActivoInMenuRolUsuario',menuController.updateActivoInMenuRolUsuario)
 //
 
 

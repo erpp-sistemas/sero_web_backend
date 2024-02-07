@@ -5,10 +5,9 @@ import path from "path";
 /*POPULATE BELOW FIELDS WITH YOUR CREDETIALS*/
 
 const CLIENT_ID =
-  "20592726281-i3h7gdksp13gquom3cmpb2t3ppclgdkp.apps.googleusercontent.com";
-const CLIENT_SECRET = "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";
-const REFRESH_TOKEN =
-  "1//04A_jdQUWj05bCgYIARAAGAQSNwF-L9IrYS7Cw1JKkzJ2we9uJYXzwxaMIZkM_dJwvJZ6GnohroCK1-oilb_PGXvEOrEc5TcYBH8";
+  "20592726281-u2t4th20vf4njit4vf16a4iggaheigap.apps.googleusercontent.com";
+const CLIENT_SECRET = "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";
+const REFRESH_TOKEN ="1//04nz0cZgPFnMBCgYIARAAGAQSNwF-L9IrIOHngJoPyot-hQAlJc9Tx_CR16XJdTQpG5K8nWDmnPT6iNSTbgbq9QOpmc4mAh_VJZk";
 const REDIRECT_URI = "https://developers.google.com/oauthplayground"; //DONT EDIT THIS
 const MY_EMAIL = "rratel76@gmail.com";
 
