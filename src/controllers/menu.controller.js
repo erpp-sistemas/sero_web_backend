@@ -368,3 +368,37 @@ export const getMenuByUserAndRol = async (req, res) => {
     return res.status(404).json({ message: 'menu not found' });
   }
 };
+
+
+
+export const updateActivoInMenuRolUsuario = async (req, res) => {
+  const place_id = 0; // Adjust this value based on your requirements
+  const sequelize = getDatabaseInstance(place_id); // Make sure to replace this line with your actual database connection function
+
+  try {
+    const { id_menu, id_rol, id_usuario, nuevoActivo } = req.body;
+
+    const [updatedRowsCount, metadata] = await sequelize.query(
+      `UPDATE db_prueba.dbo.menu_rol_usuario
+      SET activo = :nuevoActivo
+      WHERE id_menu = :id_menu AND id_rol = :id_rol AND id_usuario = :id_usuario`,
+      {
+        replacements: { id_menu, id_rol, id_usuario, nuevoActivo },
+        type: sequelize.QueryTypes.UPDATE,
+      }
+    );
+
+    console.log(`Updated rows: ${updatedRowsCount}`);
+
+    // Check if any rows were updated
+    if (updatedRowsCount === 0) {
+      return res.status(404).json({ message: 'No rows were updated.' });
+    }
+
+    // Return a success message or any other relevant information
+    return res.json({ message: 'Update successful' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: `Error updating activo in menu_rol_usuario: ${error.message}` });
+  }
+};
