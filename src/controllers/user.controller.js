@@ -265,3 +265,49 @@ export const getPlaceAndServiceAndProcessByUser = async (req, res) => {
   }
 };
 
+
+
+
+
+export const updateUserPlazaServicioProceso = async (req, res) => {
+  const { userId, plazaId, servicioId, procesoId, active } = req.body;
+
+  try {
+    const place_id = 0;
+    const sequelize = getDatabaseInstance(place_id);
+
+    // Execute query to update the 'active' column in usuario_plaza_servicio_proceso table
+    const [updatedData, metadata] = await sequelize.query(
+      `
+      UPDATE db_prueba.dbo.usuario_plaza_servicio_proceso
+      SET active = :active
+      OUTPUT inserted.*
+      WHERE id_usuario = :id_usuario
+        AND id_plaza = :id_plaza
+        AND id_servicio = :id_servicio
+        AND id_proceso = :id_proceso;
+    `,
+      {
+        replacements: {
+          id_usuario: userId,
+          id_plaza: plazaId,
+          id_servicio: servicioId,
+          id_proceso: procesoId,
+          active,
+        },
+      }
+    );
+
+    if (updatedData && updatedData.length > 0) {
+      res.json({ message: "Data updated successfully", updatedData });
+    } else {
+      res.status(404).json({ message: "Data not found or not updated" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to update data" });
+  }
+};
+
+
+

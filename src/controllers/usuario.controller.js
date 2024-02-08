@@ -155,9 +155,7 @@ export const getAllUsers = async (req, res) => {
  */
 export const updateUser = async (req, res) => {
   const userId = req.params.id;
-  console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-  console.log(req.body);
-  console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+ 
   const { nombre, url_image, activo, apellido_paterno, apellido_materno,fecha_nacimiento,id_sexo,telefono_empresa,telefono_personal,app_version } =
     req.body;
 
@@ -200,3 +198,12 @@ export const updateUser = async (req, res) => {
     res.status(500).json({ message: "Failed to update user" });
   }
 };
+
+
+
+
+
+  
+
+
+
