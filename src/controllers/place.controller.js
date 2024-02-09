@@ -75,7 +75,7 @@ export const getProcessesByUserPlaceAndServiceId = async (req, res) => {
       }
     );
 
-    if (!processes[0]) {
+    if (!processes[0]) {  
       return res.status(404).json({
         message: 'Processes not found for the specified user, place, and service.',
       });
