@@ -382,3 +382,98 @@ export const createUserPlazaServiceProcess = async (req, res) => {
     res.status(500).json({ message: "Failed to create user plaza service process data" });
   }
 };
+
+
+
+
+
+/**
+ * Obtains user plaza service process data from the database based on plaza ID.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Promise<void>} - A Promise that resolves once the data is obtained.
+ * @throws {Error} - Throws an error if the retrieval fails.
+ */
+export const getPlaceAndServiceAndProcess = async (req, res) => {
+  try {
+    const place_id = 0;
+    const sequelize = getDatabaseInstance(place_id);
+
+    // Extract plazaId from req.params
+    const { id_plaza } = req.params;
+
+    // Execute the query to obtain user plaza service process data from the database
+    const userPlazaServiceProcessData = await sequelize.query(
+      `
+      SELECT id_plaza_servicio_proceso, id_plaza, id_servicio, id_proceso
+      FROM db_prueba.dbo.plaza_servicio_proceso
+      WHERE id_plaza = :plazaId;
+    `,
+      {
+        replacements: { plazaId: id_plaza },
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
+
+    console.info(userPlazaServiceProcessData);
+
+    // Check if user plaza service process data was retrieved successfully
+    if (!userPlazaServiceProcessData || userPlazaServiceProcessData.length === 0) {
+      // If the retrieval was not successful, throw an error
+      throw new Error("Failed to retrieve user plaza service process data");
+    }
+
+    res.json(userPlazaServiceProcessData); // Send the data as a JSON response
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to retrieve user plaza service process data" });
+  }
+};
+
+
+
+
+
+/**
+ * Inserts user plaza service process data into the database.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Promise<void>} - A Promise that resolves once the data is inserted.
+ * @throws {Error} - Throws an error if the insertion fails.
+ */
+export const insertPlaceAndServiceAndProcess = async (req, res) => {
+  try {
+    const place_id = 0;
+    const sequelize = getDatabaseInstance(place_id);
+
+    // Extract plazaId and other data from req.body
+    console.log(req.body);
+    const { id_plaza, id_servicio, id_proceso } = req.body;
+
+    // Execute the query to insert user plaza service process data into the database
+    const [insertedData, metadata] = await sequelize.query(
+      `
+      INSERT INTO db_prueba.dbo.plaza_servicio_proceso (id_plaza, id_servicio, id_proceso)
+      VALUES (:id_plaza, :id_servicio, :id_proceso);
+    `,
+      {
+        replacements: { id_plaza, id_servicio, id_proceso },
+      }
+    );
+
+    if (insertedData) {
+      res.json({
+        message: "User plaza service process data inserted successfully",
+        insertedData,
+      });
+    } else {
+      res.status(500).json({ message: "Failed to insert user plaza service process data" });
+    }
+  } catch (error) {
+    // Log the error and send a 500 status with a JSON response
+    console.error(error);
+    res.status(500).json({ message: "Failed to insert user plaza service process data" });
+  }
+};
