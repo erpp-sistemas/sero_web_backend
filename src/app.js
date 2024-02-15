@@ -21,13 +21,13 @@ const app = express()
 
 //Estas lineas se usan cuando se esta trabajando el proyecto a modo local 
 //y se comentan cuando se va a subir a produccion
-app.use(cors({
-    origin: 'http://localhost:5173',
-    credentials: true
-}));
+//app.use(cors({
+  //  origin: 'http://localhost:5173',
+    //credentials: true
+//}));
 
 //Estas linas se descomentan cuando se va subir a produccion
-// app.use(cors()); 
+ app.use(cors()); 
 
 app.use(morgan('dev'))
 app.use(express.json())
