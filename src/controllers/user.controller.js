@@ -270,6 +270,9 @@ export const getPlaceAndServiceAndProcessByUser = async (req, res) => {
 
 
 export const updateUserPlazaServicioProceso = async (req, res) => {
+  console.log("****************************kkkkkkkkkkkkkkkkkkkkkkk************************");
+  console.log(req.body);
+  console.log("****************************************************");
   const { userId, plazaId, servicioId, procesoId, active } = req.body;
 
   try {
@@ -297,8 +300,11 @@ export const updateUserPlazaServicioProceso = async (req, res) => {
         },
       }
     );
+    console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    console.log(updatedData);
+    console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 
-    if (updatedData && updatedData.length > 0) {
+    if (updatedData) {
       res.json({ message: "Data updated successfully", updatedData });
     } else {
       res.status(404).json({ message: "Data not found or not updated" });
