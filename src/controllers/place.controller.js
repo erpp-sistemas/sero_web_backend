@@ -1,30 +1,27 @@
 import { getDatabaseInstance } from "../config/dbManager.config.js";
 import Joi from "joi";
 export const getPlaceByUserId = async (req, res) => {
+  const place_id = 0;
+  const sequelize = getDatabaseInstance(place_id);
 
-  const place_id = 0 
-  const sequelize = getDatabaseInstance(place_id) 
-  
   try {
-    const [placeFound, metadata] = await sequelize.query(`execute sp_get_place_by_user_id '${req.params.user_id}'`)
+    const [placeFound, metadata] = await sequelize.query(
+      `execute sp_get_place_by_user_id '${req.params.user_id}'`
+    );
 
-    console.log("este es el param:" + req.params.user_id)
+    console.log("este es el param:" + req.params.user_id);
 
-    if (!placeFound[0]) return res.status(400).json({
-      message: "not found place"
-    })
+    if (!placeFound[0])
+      return res.status(400).json({
+        message: "not found place",
+      });
 
-    res.json(placeFound)
-
+    res.json(placeFound);
   } catch (error) {
-    console.log(error)
-    return res.status(404).json({ message: 'place not found' })
+    console.log(error);
+    return res.status(404).json({ message: "place not found" });
   }
-}
-
-
-
-
+};
 
 export const getPlaceServiceByUserId = async (req, res) => {
   const place_id = 0;
@@ -52,10 +49,9 @@ export const getPlaceServiceByUserId = async (req, res) => {
     res.json(placeFound);
   } catch (error) {
     console.log(error);
-    return res.status(404).json({ message: 'place not found' });
+    return res.status(404).json({ message: "place not found" });
   }
 };
-
 
 export const getProcessesByUserPlaceAndServiceId = async (req, res) => {
   try {
@@ -65,8 +61,6 @@ export const getProcessesByUserPlaceAndServiceId = async (req, res) => {
     const plaze_id = 0;
     const sequelize = getDatabaseInstance(plaze_id);
 
-   
-
     // Execute the stored procedure to get processes
     const [processes, metadata] = await sequelize.query(
       `execute sp_get_user_place_service_process @user_id = :user_id, @place_id = :place_id, @service_id = :service_id`,
@@ -75,56 +69,62 @@ export const getProcessesByUserPlaceAndServiceId = async (req, res) => {
       }
     );
 
-    if (!processes[0]) {  
+    if (!processes[0]) {
       return res.status(404).json({
-        message: 'Processes not found for the specified user, place, and service.',
+        message:
+          "Processes not found for the specified user, place, and service.",
       });
     }
 
     res.json(processes);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: 'Internal server error' });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
 export const getPlaceById = async (req, res) => {
   try {
+    const place_id = 0;
+    const sequelize = getDatabaseInstance(place_id);
 
-    const place_id = 0 
-    const sequelize = getDatabaseInstance(place_id) 
-    
-    const [placeFound, metadata] = await sequelize.query(`execute sp_get_place_by_id '${req.params.place_id}'`)
+    const [placeFound, metadata] = await sequelize.query(
+      `execute sp_get_place_by_id '${req.params.place_id}'`
+    );
 
-    console.log("este es el param:" + req.params.place_id)
+    console.log("este es el param:" + req.params.place_id);
 
-    if (!placeFound[0]) return res.status(400).json({
-      message: "not found place"
-    })
+    if (!placeFound[0])
+      return res.status(400).json({
+        message: "not found place",
+      });
 
-    res.json(placeFound)
-
+    res.json(placeFound);
   } catch (error) {
-    console.log(error)
-    return res.status(404).json({ message: 'place not found' })
+    console.log(error);
+    return res.status(404).json({ message: "place not found" });
   }
-}
+};
 
 
+
+// Define el esquema Joi para la tabla plaza_servicio_proceso
+const createPlazaServiceProcessSchema = Joi.object({
+  id_plaza: Joi.number().integer().positive().required(),
+  id_servicio: Joi.number().integer().positive().required(),
+  id_proceso: Joi.number().integer().positive().required(),
+  active: Joi.boolean().required(),
+});
 
 // Define the validation schema for plaza data
 const createPlazaSchema = Joi.object({
-  id_plaza: Joi.number(),
   nombre: Joi.string().required(),
-  imagen: Joi.string(),
+  imagen: Joi.string().required(),
   activo: Joi.boolean().required(),
-  orden: Joi.number(),
-  fecha_ingreso: Joi.date(),
-  id_horario: Joi.number().integer(),
-  latitud: Joi.number(),
-  longitud: Joi.number(),
-  estado_republica: Joi.string(),
-  radius: Joi.number(),
+  latitud: Joi.number().required(),
+  longitud: Joi.number().required(),
+  estado_republica: Joi.string().required(),
+  radius: Joi.number().required(),
 });
 
 /**
@@ -141,8 +141,8 @@ const insertPlazaToDatabase = async (plazaData) => {
   // Execute the query to insert plaza data into the database
   const [plazaCreated] = await sequelize.query(
     `
-    INSERT INTO db_prueba.dbo.plaza (nombre, imagen, activo, orden, fecha_ingreso, id_horario, latitud, longitud, estado_republica, radius)
-    VALUES (:nombre, :imagen, :activo, :orden, :fecha_ingreso, :id_horario, :latitud, :longitud, :estado_republica, :radius);
+    INSERT INTO db_prueba.dbo.plaza (nombre, imagen, activo, latitud, longitud, estado_republica, radius)
+    VALUES (:nombre, :imagen, :activo, :latitud, :longitud, :estado_republica, :radius);
     SELECT SCOPE_IDENTITY() AS insertedId;
   `,
     {
@@ -150,8 +150,6 @@ const insertPlazaToDatabase = async (plazaData) => {
       type: sequelize.QueryTypes.SELECT,
     }
   );
-
-  console.info(plazaCreated);
 
   // Check if the plaza was created successfully
   if (!plazaCreated || plazaCreated.length === 0 || !plazaCreated.insertedId) {
@@ -171,6 +169,9 @@ const insertPlazaToDatabase = async (plazaData) => {
  */
 export const createPlaza = async (req, res) => {
   try {
+
+    console.log(req.body);
+   
     // Validate the request body against the schema
     const { error, value } = createPlazaSchema.validate(req.body);
 
@@ -194,8 +195,6 @@ export const createPlaza = async (req, res) => {
   }
 };
 
-
-
 /**
  * Deletes a specific plaza by its ID from the database.
  *
@@ -212,11 +211,14 @@ export const deletePlaza = async (req, res) => {
     const sequelize = getDatabaseInstance(place_id);
 
     // Execute query to delete the specific plaza by ID
-    const [deletedPlaza, deleteMetadata] = await sequelize.query(`
+    const [deletedPlaza, deleteMetadata] = await sequelize.query(
+      `
       DELETE FROM db_prueba.dbo.plaza WHERE id_plaza = :id;
-    `, {
-      replacements: { id: plazaId },
-    });
+    `,
+      {
+        replacements: { id: plazaId },
+      }
+    );
 
     if (deleteMetadata > 0) {
       // Send a success response or additional data as needed
@@ -227,7 +229,7 @@ export const deletePlaza = async (req, res) => {
   } catch (error) {
     // Log the error and send a 500 status with a JSON response
     console.error(error);
-    res.status(500).json({ message: 'Failed to delete plaza' });
+    res.status(500).json({ message: "Failed to delete plaza" });
   }
 };
 
@@ -302,7 +304,6 @@ export const updatePlaza = async (req, res) => {
   }
 };
 
-
 // Define the validation schema for user plaza service process data
 const createUserPlazaServiceProcessSchema = Joi.object({
   id_usuario_plaza: Joi.number(),
@@ -319,7 +320,9 @@ const createUserPlazaServiceProcessSchema = Joi.object({
  * @returns {Promise<void>} - A Promise that resolves once the data is inserted.
  * @throws {Error} - Throws an error if the insertion fails.
  */
-const insertUserPlazaServiceProcessToDatabase = async (userPlazaServiceProcessData) => {
+const insertUserPlazaServiceProcessToDatabase = async (
+  userPlazaServiceProcessData
+) => {
   const place_id = 0;
   const sequelize = getDatabaseInstance(place_id);
 
@@ -350,6 +353,48 @@ const insertUserPlazaServiceProcessToDatabase = async (userPlazaServiceProcessDa
   return userPlazaServiceProcessCreated.insertedId;
 };
 
+
+
+/**
+ * Inserts user plaza service process data into the database.
+ *
+ * @param {Object} PlazaServiceProcessData - The data to be inserted into the database.
+ * @returns {Promise<void>} - A Promise that resolves once the data is inserted.
+ * @throws {Error} - Throws an error if the insertion fails.
+ */
+const insertPlazaServiceProcessToDatabase = async (
+  PlazaServiceProcessData
+) => {
+  const place_id = 0;
+  const sequelize = getDatabaseInstance(place_id);
+
+  // Execute the query to insert user plaza service process data into the database
+  const [PlazaServiceProcessCreated] = await sequelize.query(
+    `
+    INSERT INTO dbo.plaza_servicio_proceso ( id_plaza, id_servicio, id_proceso,active)
+    VALUES (:id_plaza, :id_servicio, :id_proceso, :active);
+    SELECT SCOPE_IDENTITY() AS insertedId;
+  `,
+    {
+      replacements: PlazaServiceProcessData,
+      type: sequelize.QueryTypes.SELECT,
+    }
+  );
+
+  console.info(PlazaServiceProcessCreated);
+
+  // Check if the user plaza service process data was created successfully
+  if (
+    !PlazaServiceProcessCreated ||
+    PlazaServiceProcessCreated.length === 0 ||
+    !PlazaServiceProcessCreated.insertedId
+  ) {
+    // If the user plaza service process data creation was not successful, throw an error
+    throw new Error("Failed to create user plaza service process data");
+  }
+  return PlazaServiceProcessCreated.insertedId;
+};
+
 /**
  * Creates a new user plaza service process data using the provided data.
  *
@@ -361,7 +406,9 @@ const insertUserPlazaServiceProcessToDatabase = async (userPlazaServiceProcessDa
 export const createUserPlazaServiceProcess = async (req, res) => {
   try {
     // Validate the request body against the schema
-    const { error, value } = createUserPlazaServiceProcessSchema.validate(req.body);
+    const { error, value } = createUserPlazaServiceProcessSchema.validate(
+      req.body
+    );
 
     if (error) {
       // If there are validation errors, respond with a 400 error and error details
@@ -375,17 +422,60 @@ export const createUserPlazaServiceProcess = async (req, res) => {
     await insertUserPlazaServiceProcessToDatabase(userPlazaServiceProcessData);
 
     // Send a success response or additional data as needed
-    res.json({ message: "User plaza service process data created successfully" });
+    res.json({
+      message: "User plaza service process data created successfully",
+    });
   } catch (error) {
     // Log the error and send a 500 status with a JSON response
     console.error(error);
-    res.status(500).json({ message: "Failed to create user plaza service process data" });
+    res
+      .status(500)
+      .json({ message: "Failed to create user plaza service process data" });
   }
 };
 
 
 
 
+/**
+ * Creates a new user plaza service process data using the provided data.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Promise<void>}
+ * @throws {Error} Throws an error if the user plaza service process data creation fails.
+ */
+export const createPlazaServiceProcess = async (req, res) => {
+  try {
+    // Validate the request body against the schema
+    console.log(req.body);
+    const { error, value } = createPlazaServiceProcessSchema.validate(
+      req.body
+    );
+
+    if (error) {
+      // If there are validation errors, respond with a 400 error and error details
+      return res
+        .status(400)
+        .json({ message: "Invalid request body", error: error.details });
+    }
+
+    const userPlazaServiceProcessData = value;
+
+    await insertPlazaServiceProcessToDatabase(userPlazaServiceProcessData);
+
+    // Send a success response or additional data as needed
+    res.json({
+      message: "plaza service process data created successfully",
+    });
+  } catch (error) {
+    // Log the error and send a 500 status with a JSON response
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Failed to create user plaza service process data" });
+  }
+};
 
 /**
  * Obtains user plaza service process data from the database based on plaza ID.
@@ -395,45 +485,40 @@ export const createUserPlazaServiceProcess = async (req, res) => {
  * @returns {Promise<void>} - A Promise that resolves once the data is obtained.
  * @throws {Error} - Throws an error if the retrieval fails.
  */
-export const getPlaceAndServiceAndProcess = async (req, res) => {
+
+export const getAllPlaceAndServiceAndProcess = async (req, res) => {
   try {
     const place_id = 0;
     const sequelize = getDatabaseInstance(place_id);
 
-    // Extract plazaId from req.params
-    const { id_plaza } = req.params;
-
-    // Execute the query to obtain user plaza service process data from the database
-    const userPlazaServiceProcessData = await sequelize.query(
+    // Execute the query to obtain all plaza service process data from the database
+    const allPlazaServiceProcessData = await sequelize.query(
       `
-      SELECT id_plaza_servicio_proceso, id_plaza, id_servicio, id_proceso
-      FROM db_prueba.dbo.plaza_servicio_proceso
-      WHERE id_plaza = :plazaId;
+      SELECT id_plaza_servicio_proceso, id_plaza, id_servicio, id_proceso, active
+      FROM db_prueba.dbo.plaza_servicio_proceso;
     `,
       {
-        replacements: { plazaId: id_plaza },
         type: sequelize.QueryTypes.SELECT,
       }
     );
 
-    console.info(userPlazaServiceProcessData);
-
-    // Check if user plaza service process data was retrieved successfully
-    if (!userPlazaServiceProcessData || userPlazaServiceProcessData.length === 0) {
+    // Check if plaza service process data was retrieved successfully
+    if (
+      !allPlazaServiceProcessData ||
+      allPlazaServiceProcessData.length === 0
+    ) {
       // If the retrieval was not successful, throw an error
-      throw new Error("Failed to retrieve user plaza service process data");
+      throw new Error("Failed to retrieve plaza service process data");
     }
 
-    res.json(userPlazaServiceProcessData); // Send the data as a JSON response
+    res.json(allPlazaServiceProcessData); // Send the data as a JSON response
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Failed to retrieve user plaza service process data" });
+    res
+      .status(500)
+      .json({ message: "Failed to retrieve plaza service process data" });
   }
 };
-
-
-
-
 
 /**
  * Inserts user plaza service process data into the database.
@@ -449,7 +534,7 @@ export const insertPlaceAndServiceAndProcess = async (req, res) => {
     const sequelize = getDatabaseInstance(place_id);
 
     // Extract plazaId and other data from req.body
-    console.log(req.body);
+
     const { id_plaza, id_servicio, id_proceso } = req.body;
 
     // Execute the query to insert user plaza service process data into the database
@@ -469,11 +554,15 @@ export const insertPlaceAndServiceAndProcess = async (req, res) => {
         insertedData,
       });
     } else {
-      res.status(500).json({ message: "Failed to insert user plaza service process data" });
+      res
+        .status(500)
+        .json({ message: "Failed to insert user plaza service process data" });
     }
   } catch (error) {
     // Log the error and send a 500 status with a JSON response
     console.error(error);
-    res.status(500).json({ message: "Failed to insert user plaza service process data" });
+    res
+      .status(500)
+      .json({ message: "Failed to insert user plaza service process data" });
   }
 };

@@ -14,7 +14,8 @@ router.delete('/places/:id', placeController.deletePlaza);
 router.get('/places', placeController.getAllPlazas);
 router.put('/places/:id', placeController.updatePlaza);
 router.post("/userPlazaServiceProcess", placeController.createUserPlazaServiceProcess);
-router.get('/plazas/:id_plaza', placeController.getPlaceAndServiceAndProcess);
+/* router.get('/plazas/:id_plaza', placeController.getPlaceAndServiceAndProcess); */
 router.post('/insertPlaceAndServiceAndProcess',  placeController.insertPlaceAndServiceAndProcess);
-
+router.get('/placesAndServiceAndProcess', placeController.getAllPlaceAndServiceAndProcess);
+router.post('/placesAndServiceAndProcess', placeController.createPlazaServiceProcess)
 export default router;
